@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<EconPlusConfig>
+  <Enabled>true</Enabled>
+  <InGameDisplayName>Econ+</InGameDisplayName>
+  <EnablePlayerTransfers>true</EnablePlayerTransfers>
+  <MinimumTransferCredits>1</MinimumTransferCredits>
+  <MaximumTransferCredits>1000000000</MaximumTransferCredits>
+  <TransferCooldownSeconds>3</TransferCooldownSeconds>
+  <TransferFeePercent>0</TransferFeePercent>
+  <TreasuryFactionTag>ADMIN</TreasuryFactionTag>
+  <EnablePluginApi>true</EnablePluginApi>
+  <ApiVersion>1.0</ApiVersion>
+  <EnableEscrow>true</EnableEscrow>
+  <EscrowExpirationHours>72</EscrowExpirationHours>
+  <EnablePayroll>false</EnablePayroll>
+  <EnableTaxes>false</EnableTaxes>
+  <EnableNexusSynchronization>false</EnableNexusSynchronization>
+  <NexusChannelId>872034190422</NexusChannelId>
+  <EnableDiscordWebhook>false</EnableDiscordWebhook>
+  <DiscordWebhookUrl></DiscordWebhookUrl>
+  <DiscordWebhookName>Econ+</DiscordWebhookName>
+</EconPlusConfig>
