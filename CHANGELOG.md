@@ -1,5 +1,14 @@
 # TROA Econ+ Changelog
 
+## v0.1.3-alpha - Optional Discord Economy Audits
+
+- Adds optional asynchronous webhook embeds for completed, refunded, failed, and recovery-required results.
+- Adds independent event switches and a bounded delivery queue.
+- Adds `!econadmin webhook` and `!econadmin webhook test`.
+- Uses the owner-configured Discord webhook name.
+- Omits Steam IDs, external references, recovery notes, URLs, and checkpoint details.
+- Keeps Discord strictly notification-only; failures never affect economy results.
+
 ## v0.1.2-alpha - Staff-Verified Recovery Decisions
 
 - Adds append-only recovery decision records to the durable ledger.
