@@ -2,7 +2,7 @@
 
 TROA Econ+ is a server-side Torch economy plugin for Space Engineers. It provides durable accounting, player payments, escrow, treasury policy, recovery tools, and a versioned API for Hangar+ and other TROA plugins.
 
-> Status: `v0.1.3-alpha`  
+> Status: `v0.2.0-alpha`  
 > Runtime: Torch / .NET Framework 4.8 / x64  
 > UI requirements: none
 
@@ -19,7 +19,9 @@ Players use Space Engineers chat commands. Owners use chat commands and XML conf
 - Configurable transfer minimum, maximum, cooldown, fee, and treasury faction.
 - Durable escrow holds that integrated plugins can capture or refund.
 - Retry-safe external references that prevent duplicate plugin charges.
-- Versioned server-side `IEconPlusApi` for Hangar+ and other TROA plugins.
+- Semantic API v1.1 discovery and capability reporting for Hangar+ and other TROA plugins.
+- Mutually exclusive capture/release claims prevent the same hold from being both credited and refunded.
+- Isolated escrow contract checks cover retry, conflict, restart, and settlement-claim behavior without live balances.
 - Administrator status, configuration reload, and recovery review.
 - Atomic ledger saves with backups.
 - Windows and Linux/AMP/Wine-compatible paths.
@@ -39,6 +41,7 @@ Players use Space Engineers chat commands. Owners use chat commands and XML conf
 !econadmin recovery finalize <transaction-id-or-prefix> <revision> <Completed|Refunded|Failed> "<audit note>"
 !econadmin webhook
 !econadmin webhook test
+!econadmin escrowtest
 ```
 
 Recovery finalization never moves credits. Staff must independently verify native payer, payee, and treasury balances, inspect the current transaction revision, and then record the verified result with a required quoted audit note. Stale revisions and duplicate finalization are rejected.
@@ -46,7 +49,7 @@ Recovery finalization never moves credits. Staff must independently verify nativ
 ## Installation
 
 1. Back up the world and Torch plugin data.
-2. Install the approved `TROA-Econ-Plus-v0.1.3-alpha.zip` through Torch.
+2. Install the approved `TROA-Econ-Plus-v0.2.0-alpha.zip` through Torch.
 3. Restart Torch.
 4. Econ+ creates `TROA-Econ-Plus.cfg` and `TROA-Econ-PlusData`.
 5. Run `!econadmin status` as a Torch administrator.
@@ -54,7 +57,7 @@ Recovery finalization never moves credits. Staff must independently verify nativ
 
 ## Configuration
 
-See [TROA-Econ-Plus.cfg.example](TROA-Econ-Plus.cfg.example). Payroll, taxes, Nexus synchronization, and Discord are reserved settings and are not active in the first alpha.
+See [TROA-Econ-Plus.cfg.example](TROA-Econ-Plus.cfg.example). `MaximumEscrowCredits` limits a single plugin hold. Payroll, taxes, and Nexus synchronization remain reserved settings; Discord audit delivery is optional.
 
 ## Hangar+ integration
 
@@ -76,7 +79,7 @@ Econ+ captures seller payment
 Both plugins record completion
 ```
 
-If grid settlement fails before capture, Hangar+ releases the hold. Repeating the same external reference returns the existing transaction rather than charging twice. The current alpha publishes the contract; the optional Hangar+ adapter is the next integration phase.
+If grid settlement fails before capture, Hangar+ releases the hold. Repeating the same external reference returns the existing transaction rather than charging twice. API v1.1 now provides `EconPlusApiRegistry.TryDiscover`, semantic minimum-version checks, capability flags, configurable escrow limits, and retry-safe hold/capture/release behavior. Consumer calls remain game-thread-only.
 
 ## Discord audit webhook
 
