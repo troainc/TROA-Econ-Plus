@@ -1,5 +1,14 @@
 # TROA Econ+ Changelog
 
+## v0.2.0-alpha - Hangar+ Escrow Contract
+
+- Adds semantic API v1.1 discovery and capability reporting for Hangar+ and other server-side consumers.
+- Adds a configurable maximum escrow-hold amount.
+- Prevents capture and release from claiming the same held funds.
+- Adds `!econadmin escrowtest` for isolated duplicate, conflict, restart, and settlement-claim checks without live balances.
+- Keeps all economy integration server-side and no-UI.
+
+
 ## v0.1.3-alpha - Optional Discord Economy Audits
 
 - Adds optional asynchronous webhook embeds for completed, refunded, failed, and recovery-required results.
