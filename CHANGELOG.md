@@ -1,5 +1,14 @@
 # TROA Econ+ Changelog
 
+## v0.3.0-alpha - Treasury Policy
+
+- Separates player-transfer fees and taxes in the durable transaction record.
+- Adds configurable transfer taxes, combined-charge caps, Steam-ID exemptions, and reserved plugin exemptions.
+- Adds treasury and economy-sink destinations with durable reversal handling.
+- Adds `!econadmin treasury` for safe policy inspection.
+- Extends isolated checks for deterministic rounding, sink routing, and exemptions.
+
+
 ## v0.2.0-alpha - Hangar+ Escrow Contract
 
 - Adds semantic API v1.1 discovery and capability reporting for Hangar+ and other server-side consumers.
