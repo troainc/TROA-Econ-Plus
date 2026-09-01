@@ -17,7 +17,7 @@ Every phase is implemented through chat commands, XML configuration, and the ser
 - [x] Corrupt-ledger preservation with fail-closed economy startup.
 - [x] Automated ledger checks for duplicate references, conflicting reuse, debit claims, restart recovery, and corruption.
 - [ ] Live-server validation against native Space Engineers banking failure paths.
-- [ ] Staff-reviewed recovery finalization entries after native balances have been independently verified.
+- [x] Staff-reviewed recovery finalization entries after native balances have been independently verified.
 - [ ] Optional Discord webhook audit delivery for completed, refunded, failed, and recovery-required results.
 
 ### Phase 2 — Hangar+ integration
