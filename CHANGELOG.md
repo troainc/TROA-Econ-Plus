@@ -1,5 +1,16 @@
 # TROA Econ+ Changelog
 
+## v0.1.1-alpha - Durable Checkpoints and Restart Recovery
+
+- Adds durable attempt and confirmation checkpoints around every native banking movement.
+- Prevents concurrent retries from starting a second payer debit.
+- Rejects conflicting reuse of a plugin idempotency reference.
+- Makes compatible repeated capture/release requests return the existing result without moving credits twice.
+- Conservatively classifies interrupted operations for staff recovery after restart.
+- Adds `!econadmin recovery inspect <transaction-id-or-unique-prefix>`.
+- Preserves unreadable ledgers and stops economy startup instead of silently creating an empty ledger.
+- Packages the example configuration with the plugin DLL and manifest.
+
 ## v0.1.0-alpha - Initial Foundation
 
 - Adds the .NET Framework 4.8 Torch plugin foundation.
