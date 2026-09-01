@@ -9,8 +9,9 @@
   <TransferFeePercent>0</TransferFeePercent>
   <TreasuryFactionTag>ADMIN</TreasuryFactionTag>
   <EnablePluginApi>true</EnablePluginApi>
-  <ApiVersion>1.0</ApiVersion>
+  <ApiVersion>1.1.0</ApiVersion>
   <EnableEscrow>true</EnableEscrow>
+  <MaximumEscrowCredits>1000000000</MaximumEscrowCredits>
   <EscrowExpirationHours>72</EscrowExpirationHours>
   <EnablePayroll>false</EnablePayroll>
   <EnableTaxes>false</EnableTaxes>
