@@ -22,9 +22,9 @@ Every phase is implemented through chat commands, XML configuration, and the ser
 
 ### Phase 2 — Hangar+ integration
 
-- [ ] Stable Hangar+ escrow integration.
-- [ ] Per-plugin capability discovery and semantic API capability reporting.
-- [ ] Consumer integration tests for duplicate hold, capture, release, and restart retry.
+- [x] Stable Hangar+ escrow integration.
+- [x] Per-plugin capability discovery and semantic API capability reporting.
+- [x] Isolated consumer contract checks for duplicate hold, capture, release, conflicting references, competing settlement claims, and restart retry.
 
 ### Phase 3 — Treasury policy
 
@@ -53,4 +53,3 @@ Every phase is implemented through chat commands, XML configuration, and the ser
 ### Phase 9 — Optional credit products
 
 - [ ] Loans and interest only after escrow, reconciliation, and recovery are production-proven.
-
