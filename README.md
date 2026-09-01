@@ -2,7 +2,7 @@
 
 TROA Econ+ is a server-side Torch economy plugin for Space Engineers. It provides durable accounting, player payments, escrow, treasury policy, recovery tools, and a versioned API for Hangar+ and other TROA plugins.
 
-> Status: `v0.2.0-alpha`  
+> Status: `v0.3.0-alpha`  
 > Runtime: Torch / .NET Framework 4.8 / x64  
 > UI requirements: none
 
@@ -22,6 +22,7 @@ Players use Space Engineers chat commands. Owners use chat commands and XML conf
 - Semantic API v1.1 discovery and capability reporting for Hangar+ and other TROA plugins.
 - Mutually exclusive capture/release claims prevent the same hold from being both credited and refunded.
 - Isolated escrow contract checks cover retry, conflict, restart, and settlement-claim behavior without live balances.
+- Separate transfer fees and taxes with deterministic rounding, optional charge caps, Steam-ID exemptions, and treasury-or-sink routing.
 - Administrator status, configuration reload, and recovery review.
 - Atomic ledger saves with backups.
 - Windows and Linux/AMP/Wine-compatible paths.
@@ -42,6 +43,7 @@ Players use Space Engineers chat commands. Owners use chat commands and XML conf
 !econadmin webhook
 !econadmin webhook test
 !econadmin escrowtest
+!econadmin treasury
 ```
 
 Recovery finalization never moves credits. Staff must independently verify native payer, payee, and treasury balances, inspect the current transaction revision, and then record the verified result with a required quoted audit note. Stale revisions and duplicate finalization are rejected.
@@ -49,7 +51,7 @@ Recovery finalization never moves credits. Staff must independently verify nativ
 ## Installation
 
 1. Back up the world and Torch plugin data.
-2. Install the approved `TROA-Econ-Plus-v0.2.0-alpha.zip` through Torch.
+2. Install the approved `TROA-Econ-Plus-v0.3.0-alpha.zip` through Torch.
 3. Restart Torch.
 4. Econ+ creates `TROA-Econ-Plus.cfg` and `TROA-Econ-PlusData`.
 5. Run `!econadmin status` as a Torch administrator.
@@ -57,7 +59,7 @@ Recovery finalization never moves credits. Staff must independently verify nativ
 
 ## Configuration
 
-See [TROA-Econ-Plus.cfg.example](TROA-Econ-Plus.cfg.example). `MaximumEscrowCredits` limits a single plugin hold. Payroll, taxes, and Nexus synchronization remain reserved settings; Discord audit delivery is optional.
+See [TROA-Econ-Plus.cfg.example](TROA-Econ-Plus.cfg.example). `MaximumEscrowCredits` limits a single plugin hold. `TransferFeePercent` and `PlayerTransferTaxPercent` control player-transfer charges; `MaximumCombinedChargeCredits` can cap them. `ExemptSteamIds` accepts comma- or semicolon-separated Steam ID64 values. `ChargeDestination` selects the configured faction `Treasury` or an economy `Sink`. Payroll, taxes, and Nexus synchronization remain reserved settings; Discord audit delivery is optional.
 
 ## Hangar+ integration
 
