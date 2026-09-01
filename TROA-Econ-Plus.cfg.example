@@ -19,4 +19,9 @@
   <EnableDiscordWebhook>false</EnableDiscordWebhook>
   <DiscordWebhookUrl></DiscordWebhookUrl>
   <DiscordWebhookName>Econ+</DiscordWebhookName>
+  <DiscordNotifyCompleted>true</DiscordNotifyCompleted>
+  <DiscordNotifyRefunded>true</DiscordNotifyRefunded>
+  <DiscordNotifyFailed>false</DiscordNotifyFailed>
+  <DiscordNotifyRecoveryRequired>true</DiscordNotifyRecoveryRequired>
+  <DiscordWebhookQueueLimit>100</DiscordWebhookQueueLimit>
 </EconPlusConfig>
