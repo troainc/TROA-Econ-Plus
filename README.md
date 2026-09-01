@@ -2,7 +2,7 @@
 
 TROA Econ+ is a server-side Torch economy plugin for Space Engineers. It provides durable accounting, player payments, escrow, treasury policy, recovery tools, and a versioned API for Hangar+ and other TROA plugins.
 
-> Status: `v0.1.0-alpha`  
+> Status: `v0.1.1-alpha`  
 > Runtime: Torch / .NET Framework 4.8 / x64  
 > UI requirements: none
 
@@ -12,6 +12,9 @@ Players use Space Engineers chat commands. Owners use chat commands and XML conf
 
 - Native Space Engineers credits remain authoritative.
 - Durable transaction ledger with prepared, held, completed, refunded, failed, and recovery states.
+- Durable checkpoints before native debits, credits, treasury movements, reversals, and refunds.
+- Strict duplicate-reference matching that rejects a reused reference with different transaction details.
+- Conservative restart classification and corrupt-ledger preservation.
 - Player balance, direct payment, and recent transaction-history commands.
 - Configurable transfer minimum, maximum, cooldown, fee, and treasury faction.
 - Durable escrow holds that integrated plugins can capture or refund.
@@ -32,6 +35,7 @@ Players use Space Engineers chat commands. Owners use chat commands and XML conf
 !econadmin status
 !econadmin reload
 !econadmin recovery
+!econadmin recovery inspect <transaction-id-or-unique-prefix>
 ```
 
 Recovery is review-only in the first alpha. Econ+ preserves ambiguous transactions instead of guessing whether credits should be paid or refunded.
@@ -39,7 +43,7 @@ Recovery is review-only in the first alpha. Econ+ preserves ambiguous transactio
 ## Installation
 
 1. Back up the world and Torch plugin data.
-2. Install the approved `TROA-Econ-Plus-v0.1.0-alpha.zip` through Torch.
+2. Install the approved `TROA-Econ-Plus-v0.1.1-alpha.zip` through Torch.
 3. Restart Torch.
 4. Econ+ creates `TROA-Econ-Plus.cfg` and `TROA-Econ-PlusData`.
 5. Run `!econadmin status` as a Torch administrator.
@@ -90,9 +94,10 @@ TROA-Econ-Plus.cfg
 TROA-Econ-PlusData/
   EconPlusLedger.xml
   EconPlusLedger.xml.bak
+  EconPlusLedger.xml.corrupt-<timestamp>  (only when an unreadable ledger is preserved)
 ```
 
-Steam ID64 is the stable player reference. Native identity IDs are resolved only when banking operations occur. Back up both paths before wipes, upgrades, storage moves, or policy changes. Never delete a held or recovery-required transaction without reconciling native balances and the consumer plugin.
+Steam ID64 is the stable player reference. Native identity IDs are resolved only when banking operations occur. Back up both paths before wipes, upgrades, storage moves, or policy changes. Never delete a held or recovery-required transaction without reconciling native balances and the consumer plugin. Econ+ stops economy startup rather than replacing an unreadable ledger with an empty one.
 
 ## Alpha warning
 
