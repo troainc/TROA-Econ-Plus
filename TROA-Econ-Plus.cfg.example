@@ -7,6 +7,11 @@
   <MaximumTransferCredits>1000000000</MaximumTransferCredits>
   <TransferCooldownSeconds>3</TransferCooldownSeconds>
   <TransferFeePercent>0</TransferFeePercent>
+  <PlayerTransferTaxPercent>0</PlayerTransferTaxPercent>
+  <MaximumCombinedChargeCredits>0</MaximumCombinedChargeCredits>
+  <ChargeDestination>Treasury</ChargeDestination>
+  <ExemptSteamIds></ExemptSteamIds>
+  <ExemptSourcePlugins></ExemptSourcePlugins>
   <TreasuryFactionTag>ADMIN</TreasuryFactionTag>
   <EnablePluginApi>true</EnablePluginApi>
   <ApiVersion>1.1.0</ApiVersion>
