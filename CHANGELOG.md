@@ -1,5 +1,14 @@
 # TROA Econ+ Changelog
 
+## v0.1.2-alpha - Staff-Verified Recovery Decisions
+
+- Adds append-only recovery decision records to the durable ledger.
+- Adds `!econadmin recovery finalize <id> <revision> <Completed|Refunded|Failed> "<audit note>"`.
+- Requires native-balance verification, a current revision, and a 10–500 character audit note.
+- Rejects stale, duplicate, non-recovery, and unsupported finalization attempts.
+- Records the administrator, prior state/detail, final state, UTC timestamp, and note.
+- Never moves credits as part of recovery finalization.
+
 ## v0.1.1-alpha - Durable Checkpoints and Restart Recovery
 
 - Adds durable attempt and confirmation checkpoints around every native banking movement.
