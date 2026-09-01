@@ -28,7 +28,7 @@ Every phase is implemented through chat commands, XML configuration, and the ser
 
 ### Phase 3 — Treasury policy
 
-- [ ] Treasury accounts, configurable taxes, fees, sinks, and exemptions.
+- [x] Treasury accounts, configurable taxes, fees, sinks, and exemptions.
 
 ### Phase 4 — Operations and reconciliation
 
