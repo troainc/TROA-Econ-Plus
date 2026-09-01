@@ -2,7 +2,7 @@
 
 TROA Econ+ is a server-side Torch economy plugin for Space Engineers. It provides durable accounting, player payments, escrow, treasury policy, recovery tools, and a versioned API for Hangar+ and other TROA plugins.
 
-> Status: `v0.1.2-alpha`  
+> Status: `v0.1.3-alpha`  
 > Runtime: Torch / .NET Framework 4.8 / x64  
 > UI requirements: none
 
@@ -37,6 +37,8 @@ Players use Space Engineers chat commands. Owners use chat commands and XML conf
 !econadmin recovery
 !econadmin recovery inspect <transaction-id-or-unique-prefix>
 !econadmin recovery finalize <transaction-id-or-prefix> <revision> <Completed|Refunded|Failed> "<audit note>"
+!econadmin webhook
+!econadmin webhook test
 ```
 
 Recovery finalization never moves credits. Staff must independently verify native payer, payee, and treasury balances, inspect the current transaction revision, and then record the verified result with a required quoted audit note. Stale revisions and duplicate finalization are rejected.
@@ -44,7 +46,7 @@ Recovery finalization never moves credits. Staff must independently verify nativ
 ## Installation
 
 1. Back up the world and Torch plugin data.
-2. Install the approved `TROA-Econ-Plus-v0.1.2-alpha.zip` through Torch.
+2. Install the approved `TROA-Econ-Plus-v0.1.3-alpha.zip` through Torch.
 3. Restart Torch.
 4. Econ+ creates `TROA-Econ-Plus.cfg` and `TROA-Econ-PlusData`.
 5. Run `!econadmin status` as a Torch administrator.
@@ -75,6 +77,10 @@ Both plugins record completion
 ```
 
 If grid settlement fails before capture, Hangar+ releases the hold. Repeating the same external reference returns the existing transaction rather than charging twice. The current alpha publishes the contract; the optional Hangar+ adapter is the next integration phase.
+
+## Discord audit webhook
+
+Discord audit delivery is optional, asynchronous, and notification-only. Owners control the external name with `DiscordWebhookName` and can independently enable Completed, Refunded, Failed, and RecoveryRequired notices. Failed notices default off; recovery alerts default on. Notices contain no Steam IDs, external references, recovery notes, webhook URLs, or checkpoint details. Delivery failures never change a transaction.
 
 ## Planned features
 
