@@ -1,13 +1,56 @@
 # TROA Econ+ Roadmap
 
-1. Durable ledger, transfers, escrow, and recovery queue.
-2. Optional Hangar+ adapter and per-plugin capability discovery.
-3. Treasury accounts, taxes, fees, sinks, and exemptions.
-4. Statements, reconciliation, staff adjustments, and audit exports.
-5. Payroll, rewards, bounties, contracts, deposits, and scheduled jobs.
-6. Plugin permissions, velocity limits, anomaly flags, and reputation signals.
-7. Nexus v3 cross-server authority, replay protection, locks, and reconciliation.
-8. Economy analytics, supply/sink reports, treasury metrics, and tuning tools.
-9. Optional loans and interest only after escrow and recovery are production-proven.
+Every phase is implemented through chat commands, XML configuration, and the server-side plugin API. Econ+ will not add a custom UI.
 
-Every phase remains chat/config/API driven with no client or desktop UI.
+## Current status
+
+### Phase 1 — Safe transaction foundation (in progress)
+
+- [x] Explicit `Prepared -> FundsHeld -> Completed/Refunded/RecoveryRequired` transaction states.
+- [x] Atomic XML ledger replacement with a retained backup.
+- [x] Durable checkpoints before payer debit, payee credit, treasury movement, reversal, and refund attempts.
+- [x] Strict `sourcePlugin + externalReference` idempotency with payload-conflict rejection.
+- [x] Single-claim protection so concurrent retries cannot start a second debit.
+- [x] Player balance, transfer, history, limits, fee, cooldown, and permission enforcement.
+- [x] Conservative startup classification for interrupted transactions.
+- [x] Recovery queue plus staff checkpoint inspection.
+- [x] Corrupt-ledger preservation with fail-closed economy startup.
+- [x] Automated ledger checks for duplicate references, conflicting reuse, debit claims, restart recovery, and corruption.
+- [ ] Live-server validation against native Space Engineers banking failure paths.
+- [ ] Staff-reviewed recovery finalization entries after native balances have been independently verified.
+- [ ] Optional Discord webhook audit delivery for completed, refunded, failed, and recovery-required results.
+
+### Phase 2 — Hangar+ integration
+
+- [ ] Stable Hangar+ escrow integration.
+- [ ] Per-plugin capability discovery and semantic API capability reporting.
+- [ ] Consumer integration tests for duplicate hold, capture, release, and restart retry.
+
+### Phase 3 — Treasury policy
+
+- [ ] Treasury accounts, configurable taxes, fees, sinks, and exemptions.
+
+### Phase 4 — Operations and reconciliation
+
+- [ ] Statements, search, staff adjustments, reconciliation, and audit exports.
+
+### Phase 5 — Scheduled economy
+
+- [ ] Faction payroll, rewards, bounties, contracts, deposits, and scheduled jobs.
+
+### Phase 6 — Risk controls
+
+- [ ] Plugin permission policies, velocity limits, anomaly flags, and reputation signals.
+
+### Phase 7 — Nexus v3
+
+- [ ] Nexus v3 discovery, single-writer cross-server authority, locks, replay protection, and reconciliation.
+
+### Phase 8 — Analytics
+
+- [ ] Economy supply/sink reporting, transaction analytics, server health metrics, and tuning tools.
+
+### Phase 9 — Optional credit products
+
+- [ ] Loans and interest only after escrow, reconciliation, and recovery are production-proven.
+
