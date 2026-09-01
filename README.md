@@ -2,7 +2,7 @@
 
 TROA Econ+ is a server-side Torch economy plugin for Space Engineers. It provides durable accounting, player payments, escrow, treasury policy, recovery tools, and a versioned API for Hangar+ and other TROA plugins.
 
-> Status: `v0.1.1-alpha`  
+> Status: `v0.1.2-alpha`  
 > Runtime: Torch / .NET Framework 4.8 / x64  
 > UI requirements: none
 
@@ -36,14 +36,15 @@ Players use Space Engineers chat commands. Owners use chat commands and XML conf
 !econadmin reload
 !econadmin recovery
 !econadmin recovery inspect <transaction-id-or-unique-prefix>
+!econadmin recovery finalize <transaction-id-or-prefix> <revision> <Completed|Refunded|Failed> "<audit note>"
 ```
 
-Recovery is review-only in the first alpha. Econ+ preserves ambiguous transactions instead of guessing whether credits should be paid or refunded.
+Recovery finalization never moves credits. Staff must independently verify native payer, payee, and treasury balances, inspect the current transaction revision, and then record the verified result with a required quoted audit note. Stale revisions and duplicate finalization are rejected.
 
 ## Installation
 
 1. Back up the world and Torch plugin data.
-2. Install the approved `TROA-Econ-Plus-v0.1.1-alpha.zip` through Torch.
+2. Install the approved `TROA-Econ-Plus-v0.1.2-alpha.zip` through Torch.
 3. Restart Torch.
 4. Econ+ creates `TROA-Econ-Plus.cfg` and `TROA-Econ-PlusData`.
 5. Run `!econadmin status` as a Torch administrator.
@@ -97,7 +98,7 @@ TROA-Econ-PlusData/
   EconPlusLedger.xml.corrupt-<timestamp>  (only when an unreadable ledger is preserved)
 ```
 
-Steam ID64 is the stable player reference. Native identity IDs are resolved only when banking operations occur. Back up both paths before wipes, upgrades, storage moves, or policy changes. Never delete a held or recovery-required transaction without reconciling native balances and the consumer plugin. Econ+ stops economy startup rather than replacing an unreadable ledger with an empty one.
+Steam ID64 is the stable player reference. Native identity IDs are resolved only when banking operations occur. Back up both paths before wipes, upgrades, storage moves, or policy changes. Never delete a held or recovery-required transaction without reconciling native balances and the consumer plugin. Recovery decisions remain appended to the ledger with the administrator, previous state, verified result, time, and note. Econ+ stops economy startup rather than replacing an unreadable ledger with an empty one.
 
 ## Alpha warning
 
