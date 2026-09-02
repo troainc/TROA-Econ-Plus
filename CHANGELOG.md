@@ -1,5 +1,16 @@
 # TROA Econ+ Changelog
 
+## v1.0.0-alpha.1 - Standalone Accounts and Player Experience
+
+- Makes the durable Steam ID64 Econ+ account database the authoritative balance source.
+- Adds optional one-time Keen balance import and best-effort Keen balance mirroring for vanilla compatibility.
+- Adds atomic `Accounts.xml` persistence with corrupt-file preservation and fail-closed startup behavior.
+- Routes player transfers, treasury payouts, scheduled programs, adjustments, loans, repayments, and plugin API balances through Econ+ accounts.
+- Adds player `dashboard`, `risk`, `loanapply`, and `loanrepay` commands while retaining the existing loan command path.
+- Adds owned LCD account dashboards with configurable name tag, refresh interval, and recent-transaction count.
+- Enables configurable player loan applications with principal and term limits.
+- Adds complete configuration examples and player-facing documentation for standalone accounting.
+
 ## v0.9.0-alpha - Risk, Nexus Guards, Analytics, and Credit
 
 - Completes roadmap phases 6–9 while retaining the command/config-only server architecture.

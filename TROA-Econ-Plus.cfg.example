@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <EconPlusConfig>
   <Enabled>true</Enabled>
+  <!-- Econ+ stores authoritative balances by Steam ID64 in TROA-Econ-PlusData/Accounts.xml. -->
+  <UseInternalAccounts>true</UseInternalAccounts>
+  <!-- Import each player's current Keen balance once when their Econ+ account is first created. -->
+  <ImportKeenBalanceOnFirstUse>true</ImportKeenBalanceOnFirstUse>
+  <!-- Optional compatibility mirror. Econ+ remains authoritative if Keen banking is unavailable. -->
+  <MirrorBalancesToKeen>true</MirrorBalancesToKeen>
+  <NewAccountStartingCredits>10000</NewAccountStartingCredits>
   <InGameDisplayName>Econ+</InGameDisplayName>
   <EnablePlayerTransfers>true</EnablePlayerTransfers>
   <MinimumTransferCredits>1</MinimumTransferCredits>
@@ -43,12 +50,19 @@
   <NexusReplayRetentionDays>30</NexusReplayRetentionDays>
   <EnableAnalytics>true</EnableAnalytics>
   <AnalyticsDefaultDays>7</AnalyticsDefaultDays>
-  <EnableCreditProducts>false</EnableCreditProducts>
+  <EnableCreditProducts>true</EnableCreditProducts>
+  <EnablePlayerLoanApplications>true</EnablePlayerLoanApplications>
+  <MaximumPlayerRequestedLoanCredits>1000000</MaximumPlayerRequestedLoanCredits>
   <MaximumLoanPrincipalCredits>100000000</MaximumLoanPrincipalCredits>
   <LoanAnnualInterestPercent>5</LoanAnnualInterestPercent>
   <MaximumLoanTermDays>30</MaximumLoanTermDays>
   <LoanPaymentIntervalDays>7</LoanPaymentIntervalDays>
   <MaximumActiveLoansPerPlayer>1</MaximumActiveLoansPerPlayer>
+  <!-- Name an owned LCD/text surface with this tag to show the owner's account dashboard. -->
+  <EnablePlayerLcdDisplays>true</EnablePlayerLcdDisplays>
+  <LcdNameTag>[ECON+]</LcdNameTag>
+  <LcdRefreshSeconds>30</LcdRefreshSeconds>
+  <LcdRecentTransactions>5</LcdRecentTransactions>
   <EnableDiscordWebhook>false</EnableDiscordWebhook>
   <DiscordWebhookUrl></DiscordWebhookUrl>
   <DiscordWebhookName>Econ+</DiscordWebhookName>

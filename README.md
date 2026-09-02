@@ -2,14 +2,14 @@
 
 TROA Econ+ is a server-side Torch economy plugin for Space Engineers. It provides durable accounting, escrow, treasury policy, and a versioned integration API for Hangar+ and other TROA plugins. It has no client mod, desktop UI, web UI, WPF, or WinForms dependency.
 
-> Current release: `v0.9.0-alpha`  
+> Current release: `v1.0.0-alpha.1`
 > Runtime: Torch / .NET Framework 4.8 / x64  
 > Interface: Space Engineers chat commands, XML configuration, and server-side plugin API only
 
 ## Installation
 
 1. Back up the world, `TROA-Econ-Plus.cfg`, and `TROA-Econ-PlusData`.
-2. Install `releases/TROA-Econ-Plus-v0.9.0-alpha.zip` through Torch.
+2. Install `releases/TROA-Econ-Plus-v1.0.0-alpha.1.zip` through Torch.
 3. Restart Torch so the updated command modules and API are loaded.
 4. Review the generated configuration before enabling payroll, Nexus safeguards, or credit products.
 5. Run `!econadmin status`, `!econadmin escrowtest`, and `!econadmin webhook test` where applicable.
@@ -17,7 +17,9 @@ TROA Econ+ is a server-side Torch economy plugin for Space Engineers. It provide
 
 ## Current foundation
 
-- Native Space Engineers credit balances remain authoritative.
+- Econ+ balances stored by Steam ID64 in `TROA-Econ-PlusData/Accounts.xml` are authoritative.
+- Optional one-time Keen balance import and best-effort Keen balance mirroring preserve vanilla compatibility without making Keen banking the source of truth.
+- Player account LCD dashboards show balance, reputation, loans, debt, and recent activity without a client mod.
 - Durable XML transaction ledger with explicit states and atomic saves.
 - Durable checkpoints before every native debit, credit, treasury movement, reversal, and refund attempt.
 - Strict idempotency matching that rejects reuse of a reference with different transaction details.
@@ -36,6 +38,20 @@ TROA Econ+ is a server-side Torch economy plugin for Space Engineers. It provide
 - Personal statements plus administrator search, reconciliation, adjustments, and CSV audit exports.
 - Durable faction-treasury payroll, rewards, bounties, contracts, deposits, and scheduled jobs.
 - Automatic scheduled-job execution on the Space Engineers game thread with idempotent revision references.
+
+## Player commands
+
+- `!econ help` lists all player commands.
+- `!econ balance` and `!econ dashboard` show the player's Econ+ account.
+- `!econ pay <steam-id> <credits>` transfers internal credits safely.
+- `!econ history <count>` and `!econ statement <count>` show durable activity.
+- `!econ risk` shows the player's current configured limits and recent usage.
+- `!econ loans`, `!econ loanapply <credits> <days> "purpose"`, and `!econ loanrepay <loan-id> <credits>` provide player credit tools.
+- Name an owned text surface with `[ECON+]` (configurable) to display the player's live account dashboard.
+
+## Standalone accounting and Keen compatibility
+
+Econ+ does not depend on Keen banking to preserve balances. Account records use durable Steam ID64 identity and atomic XML replacement, so world identity changes do not become the accounting key. `ImportKeenBalanceOnFirstUse` can seed a new Econ+ account from the player's current vanilla balance. `MirrorBalancesToKeen` can reflect later Econ+ changes into the vanilla bank for compatibility with game screens and other plugins. A Keen mirror failure never replaces or discards the authoritative Econ+ record.
 
 ## Implemented through Phase 9
 
