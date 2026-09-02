@@ -19,9 +19,36 @@
   <MaximumEscrowCredits>1000000000</MaximumEscrowCredits>
   <EscrowExpirationHours>72</EscrowExpirationHours>
   <EnablePayroll>false</EnablePayroll>
+  <ScheduledJobPollSeconds>60</ScheduledJobPollSeconds>
+  <MaximumScheduledJobsPerRun>25</MaximumScheduledJobsPerRun>
+  <MaximumRewardCredits>1000000000</MaximumRewardCredits>
+  <RequireFundedTreasuryPayouts>true</RequireFundedTreasuryPayouts>
+  <AuditExportDirectory>AuditExports</AuditExportDirectory>
+  <StatementMaximumRows>100</StatementMaximumRows>
+  <AuditRetentionDays>365</AuditRetentionDays>
+  <EnableRiskControls>true</EnableRiskControls>
+  <AllowedApiPlugins>Hangar+</AllowedApiPlugins>
+  <VelocityWindowMinutes>10</VelocityWindowMinutes>
+  <MaximumTransactionsPerWindow>20</MaximumTransactionsPerWindow>
+  <MaximumCreditsPerWindow>5000000000</MaximumCreditsPerWindow>
+  <DailyTransferLimitCredits>10000000000</DailyTransferLimitCredits>
+  <AnomalyLargeTransferPercent>80</AnomalyLargeTransferPercent>
+  <EnableReputationSignals>true</EnableReputationSignals>
   <EnableTaxes>false</EnableTaxes>
   <EnableNexusSynchronization>false</EnableNexusSynchronization>
   <NexusChannelId>872034190422</NexusChannelId>
+  <NexusServerId></NexusServerId>
+  <NexusAuthorityServerId></NexusAuthorityServerId>
+  <NexusLockSeconds>30</NexusLockSeconds>
+  <NexusReplayRetentionDays>30</NexusReplayRetentionDays>
+  <EnableAnalytics>true</EnableAnalytics>
+  <AnalyticsDefaultDays>7</AnalyticsDefaultDays>
+  <EnableCreditProducts>false</EnableCreditProducts>
+  <MaximumLoanPrincipalCredits>100000000</MaximumLoanPrincipalCredits>
+  <LoanAnnualInterestPercent>5</LoanAnnualInterestPercent>
+  <MaximumLoanTermDays>30</MaximumLoanTermDays>
+  <LoanPaymentIntervalDays>7</LoanPaymentIntervalDays>
+  <MaximumActiveLoansPerPlayer>1</MaximumActiveLoansPerPlayer>
   <EnableDiscordWebhook>false</EnableDiscordWebhook>
   <DiscordWebhookUrl></DiscordWebhookUrl>
   <DiscordWebhookName>Econ+</DiscordWebhookName>
