@@ -1,6 +1,30 @@
 # TROA Econ+ Changelog
 
-## v1.0.0-alpha.1 - Standalone Accounts and Player Experience
+## v0.9.5-alpha - Full Banking Expansion
+
+- Adds ledger-based account recovery preview/rebuild with explicit confirmation and pre-recovery signed backups.
+- Adds Keen drift reports, expected-drift repair confirmation, and one-account Keen imports.
+- Adds offline and conflict-safe exact-name payments using durable Steam ID64 aliases.
+- Adds checking, savings, business, and managed faction treasury accounts.
+- Routes deposits, withdrawals, and named-account payments through durable transaction checkpoints with confirmed reversals or recovery classification.
+- Adds rent, subscription, tax, loan-payment, and general recurring schedules with pause/resume/cancel controls.
+- Routes scheduled taxes to the Econ+ treasury and runs loan reminders/automatic payments even when general schedules are disabled.
+- Adds credit scores, approval minimums, grace periods, late fees, refinancing, and automatic-payment/reminder configuration.
+- Adds faction daily limits and approval thresholds as durable policy fields.
+- Adds faction manager grant/revoke commands, policy updates, expiring approval requests, and confirmed approved payouts.
+- Adds Compact, Detailed, Loan, Faction, and Market LCD templates.
+- Adds supply, median wealth, top-decile wealth, volume, sinks, sources, and inactivity reports.
+- Adds retained historical supply snapshots and calculated inflation/deflation reporting.
+- Adds repeated-failure, account-funnel, and unusual authoritative balance-change fraud signals alongside existing velocity controls.
+- Adds audited compensating rollback transactions without mutating original history.
+- Adds persistent maintenance mode for safe backups, migration, and incident response.
+- Adds SHA-256-signed backups and account exports.
+- Adds guarded merge/replace CSV/XML migration from a restricted Imports folder with validation, confirmation, and automatic signed backup.
+- Adds polished optional masked-account Discord banking embeds through a separate webhook while keeping detailed statements in-game by default.
+- Publishes API v2 capabilities for standalone accounts, offline payments, named accounts, and maintenance guards.
+- Preserves local milestone review packages separately from the official release line.
+
+### Standalone Account Foundation Included in v0.9.5-alpha
 
 - Makes the durable Steam ID64 Econ+ account database the authoritative balance source.
 - Adds optional one-time Keen balance import and best-effort Keen balance mirroring for vanilla compatibility.

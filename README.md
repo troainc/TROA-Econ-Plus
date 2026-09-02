@@ -2,14 +2,14 @@
 
 TROA Econ+ is a server-side Torch economy plugin for Space Engineers. It provides durable accounting, escrow, treasury policy, and a versioned integration API for Hangar+ and other TROA plugins. It has no client mod, desktop UI, web UI, WPF, or WinForms dependency.
 
-> Current release: `v1.0.0-alpha.1`
+> Current release: `v0.9.5-alpha`
 > Runtime: Torch / .NET Framework 4.8 / x64  
 > Interface: Space Engineers chat commands, XML configuration, and server-side plugin API only
 
 ## Installation
 
 1. Back up the world, `TROA-Econ-Plus.cfg`, and `TROA-Econ-PlusData`.
-2. Install `releases/TROA-Econ-Plus-v1.0.0-alpha.1.zip` through Torch.
+2. Install `releases/TROA-Econ-Plus-v0.9.5-alpha.zip` through Torch.
 3. Restart Torch so the updated command modules and API are loaded.
 4. Review the generated configuration before enabling payroll, Nexus safeguards, or credit products.
 5. Run `!econadmin status`, `!econadmin escrowtest`, and `!econadmin webhook test` where applicable.
@@ -52,6 +52,58 @@ TROA Econ+ is a server-side Torch economy plugin for Space Engineers. It provide
 ## Standalone accounting and Keen compatibility
 
 Econ+ does not depend on Keen banking to preserve balances. Account records use durable Steam ID64 identity and atomic XML replacement, so world identity changes do not become the accounting key. `ImportKeenBalanceOnFirstUse` can seed a new Econ+ account from the player's current vanilla balance. `MirrorBalancesToKeen` can reflect later Econ+ changes into the vanilla bank for compatibility with game screens and other plugins. A Keen mirror failure never replaces or discards the authoritative Econ+ record.
+
+## Banking expansion
+
+- Offline and exact-name payments resolve to durable Steam ID64 records; ambiguous names fail safely.
+- Personal checking, savings, business, and managed faction treasury records persist in `EconPlusExpansion.xml`.
+- Checking-to-account deposits, withdrawals, and named-account payments use durable debit, settlement, reversal, and recovery checkpoints.
+- Repeating payment, rent, subscription, tax, and loan-payment schedules use durable revision-based references.
+- Scheduled taxes credit the Econ+ treasury; automatic loan servicing runs directly from active loan records.
+- Faction treasuries include manager grants/revocations, configurable daily limits, pending approvals, 24-hour approval expiration, and confirmed large withdrawals.
+- Maintenance mode freezes player transfers, scheduled payments, and plugin escrow creation during incidents or migrations.
+
+## Recovery, reconciliation, and rollback
+
+- Signed backups include every Econ+ database plus a SHA-256 manifest.
+- Account exports produce CSV plus a detached SHA-256 file.
+- Guarded migration accepts validated CSV or XML only from `TROA-Econ-PlusData/Imports`, rejects duplicate/negative/overflow balances, creates a signed backup first, and requires `IMPORT` confirmation.
+- Ledger recovery offers a no-change preview and requires the exact `REBUILD` confirmation.
+- Keen reconciliation reports drift without changing balances; repair requires the expected drift and `CONFIRM`.
+- Keen import creates a signed backup before replacing one authoritative Econ+ account.
+- Rollback never edits transaction history. It creates a new idempotent compensating transaction and fails safely if the recipient cannot fund it.
+
+## Credit and fraud controls
+
+- Credit scores range from 300–850 and derive from durable reputation signals.
+- Loan policy supports minimum score, grace periods, one-time late fees, refinancing, and configurable automatic-payment/reminder settings.
+- Fraud monitoring flags repeated failures, rapid transaction velocity, high credit volume, unusually large transfers, authoritative balance jumps, and multi-recipient funnel patterns.
+- Findings remain audit signals; Econ+ does not automatically ban players.
+
+## LCD templates
+
+Name an owned text surface with the configured `[ECON+]` tag. Add one of these lines to Custom Data:
+
+- `Template=Compact` for balance, score, and loan count.
+- `Template=Detailed` for the complete account and recent activity.
+- `Template=Loan` for score, debt, and due dates.
+- `Template=Faction` for managed faction treasuries.
+- `Template=Market` for recent Hangar market activity.
+
+## Discord and plugin API
+
+- Discord remains optional and never controls balances.
+- A separate banking webhook posts polished masked-account embeds to a staff-controlled private channel; Discord webhooks cannot guarantee true direct messages and transaction statements remain in-game unless separately authorized.
+- API v2 adds standalone-account, offline-payment, named-account, and maintenance capabilities while preserving the v1 escrow interface.
+- Hangar, GridVault, jobs, stores, rewards, and future plugins can discover capabilities and use stable idempotency references.
+
+## Historical economy reports
+
+Econ+ stores periodic supply snapshots in `EconPlusExpansion.xml`. `!econadmin report [days]` compares current supply with historical snapshots to report inflation or deflation, median wealth, top-decile concentration, transaction volume, sinks, sources, and inactive accounts. Snapshot interval and retention are configurable.
+
+## Migration format
+
+CSV files use `SteamId,Balance,Name`. XML files use an `EconMigrationFile` root containing `Accounts` entries with `SteamId`, `Balance`, and optional `Name`. Run `!econadmin accounts import <filename> <merge|replace> IMPORT`. Replace mode replaces player accounts only after a signed backup; treasury state is preserved.
 
 ## Implemented through Phase 9
 
