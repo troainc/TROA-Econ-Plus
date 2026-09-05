@@ -2,14 +2,16 @@
 
 TROA Econ+ is a server-side Torch economy plugin for Space Engineers. It provides durable accounting, escrow, treasury policy, and a versioned integration API for Hangar+ and other TROA plugins. It has no client mod, desktop UI, web UI, WPF, or WinForms dependency.
 
-> Current release: `v0.9.5-alpha`
+> Current release: `v1.2.0-alpha`
 > Runtime: Torch / .NET Framework 4.8 / x64  
-> Interface: Space Engineers chat commands, XML configuration, and server-side plugin API only
+> Interface: Space Engineers chat commands, XML configuration, LCD panels, and server-side plugin API only
+
+Econ+ is a self-contained economic ecosystem. Native Space Engineers ("Keen") banking is used only to add/remove credits (an optional balance mirror) and to show in-game messages; accounts, banks, treasuries, a dynamic commodity market, and an investment exchange are all owned by Econ+. The `!econadmin boundarytest` command verifies, by scanning the compiled plugin, that no code path outside the balance mirror touches native Keen banking.
 
 ## Installation
 
 1. Back up the world, `TROA-Econ-Plus.cfg`, and `TROA-Econ-PlusData`.
-2. Install `releases/TROA-Econ-Plus-v0.9.5-alpha.zip` through Torch.
+2. Install `releases/TROA-Econ-Plus-v1.2.0-alpha.zip` through Torch.
 3. Restart Torch so the updated command modules and API are loaded.
 4. Review the generated configuration before enabling payroll, Nexus safeguards, or credit products.
 5. Run `!econadmin status`, `!econadmin escrowtest`, and `!econadmin webhook test` where applicable.
@@ -47,11 +49,13 @@ TROA Econ+ is a server-side Torch economy plugin for Space Engineers. It provide
 - `!econ history <count>` and `!econ statement <count>` show durable activity.
 - `!econ risk` shows the player's current configured limits and recent usage.
 - `!econ loans`, `!econ loanapply <credits> <days> "purpose"`, and `!econ loanrepay <loan-id> <credits>` provide player credit tools.
+- `!econ trade`, `!econ trade quote|buy|sell <symbol> <qty>`, and `!econ trade holdings` use the dynamic commodity market (buy/sell near a trade station).
+- `!econ invest`, `!econ invest quote|buy|sell <symbol> <qty>`, and `!econ invest portfolio` use the investment exchange.
 - Name an owned text surface with `[ECON+]` (configurable) to display the player's live account dashboard.
 
 ## Standalone accounting and Keen compatibility
 
-Econ+ does not depend on Keen banking to preserve balances. Account records use durable Steam ID64 identity and atomic XML replacement, so world identity changes do not become the accounting key. `ImportKeenBalanceOnFirstUse` can seed a new Econ+ account from the player's current vanilla balance. `MirrorBalancesToKeen` can reflect later Econ+ changes into the vanilla bank for compatibility with game screens and other plugins. A Keen mirror failure never replaces or discards the authoritative Econ+ record.
+Econ+ does not depend on Keen banking to preserve balances. Account records use durable Steam ID64 identity and atomic XML replacement, so world identity changes do not become the accounting key. `ImportKeenBalanceOnFirstUse` can seed a new Econ+ account from the player's current vanilla balance. `MirrorBalancesToKeen` can reflect later Econ+ changes into the vanilla bank for compatibility with game screens and other plugins. A Keen mirror failure never replaces or discards the authoritative Econ+ record. Native `MyBankingSystem` access is confined to a single balance service (the mirror plus first-use import and reconciliation); every other money path - transfers, payroll, loans, escrow, named accounts, faction treasuries, and both markets - moves credits through the internal accounts. `!econadmin boundarytest` scans the compiled plugin and fails if any other code path references native Keen banking.
 
 ## Banking expansion
 
@@ -62,6 +66,16 @@ Econ+ does not depend on Keen banking to preserve balances. Account records use 
 - Scheduled taxes credit the Econ+ treasury; automatic loan servicing runs directly from active loan records.
 - Faction treasuries include manager grants/revocations, configurable daily limits, pending approvals, 24-hour approval expiration, and confirmed large withdrawals.
 - Maintenance mode freezes player transfers, scheduled payments, and plugin escrow creation during incidents or migrations.
+
+## Commodity market
+
+Econ+ runs a dynamic commodity market for Space Engineers materials. Each commodity's price floats on net supply and demand - buying pushes a price up, selling pushes it down - bounded by a per-commodity minimum and maximum and mean-reverting to a base price over time. Trades are credit-settled through the authoritative Econ+ accounts with the treasury acting as the market maker, so buys pay the treasury and sells are funded by it and no credits are minted or burned.
+
+Players trade with `!econ trade` while near a trade station: a grid named with the configurable `StationNameTag` (default `[ECON+ STATION]`), within `StationRadiusMeters`. `Template=Station` LCD panels show the live board. By default a trade tracks a virtual position; with `EnablePhysicalDelivery` enabled, buying instead deposits the real item into the player's inventory and selling removes it, using only the Space Engineers inventory system and with ordering that prevents duplication before loss. Consumer plugins such as Hangar+ can price and settle trades through `IEconPlusMarketApi` after confirming the `CommodityMarket` capability.
+
+## Investment exchange
+
+Econ+ also runs an investment exchange of abstract shares and indices. Their prices move both on player flow and on a simulated drift that random-walks each tick within per-instrument bounds, so the board is alive between trades. Instruments are abstract, so there is no physical delivery; trades are credit-settled exactly like the commodity market. Players use `!econ invest`, positions appear in `!econ invest portfolio`, and `Template=Exchange` LCD panels show the live ticker with price and change. Consumer plugins can use `IEconPlusInvestApi` after confirming the `InvestmentExchange` capability.
 
 ## Recovery, reconciliation, and rollback
 
@@ -89,6 +103,9 @@ Name an owned text surface with the configured `[ECON+]` tag. Add one of these l
 - `Template=Loan` for score, debt, and due dates.
 - `Template=Faction` for managed faction treasuries.
 - `Template=Market` for recent Hangar market activity.
+- `Template=Bank` for balance, credit score, and all managed named/faction accounts.
+- `Template=Station` for the live commodity trade-station board (renders on any tagged panel; optional `StationId=` line).
+- `Template=Exchange` for the live share/index ticker with price and change.
 
 ## Discord and plugin API
 
@@ -203,6 +220,12 @@ CSV files use `SteamId,Balance,Name`. XML files use an `EconMigrationFile` root 
 !econ reputation
 !econ loans
 !econ loan repay <loan-id> <credits>
+!econ trade
+!econ trade quote|buy|sell <symbol> <qty>
+!econ trade holdings
+!econ invest
+!econ invest quote|buy|sell <symbol> <qty>
+!econ invest portfolio
 
 !econadmin help
 !econadmin status
@@ -232,6 +255,9 @@ CSV files use `SteamId,Balance,Name`. XML files use an `EconMigrationFile` root 
 !econadmin webhook
 !econadmin webhook test
 !econadmin escrowtest
+!econadmin boundarytest
+!econadmin markettest
+!econadmin investtest
 !econadmin treasury
 ```
 
@@ -264,9 +290,13 @@ Compatibility paths:
 ```text
 TROA-Econ-Plus.cfg
 TROA-Econ-PlusData/
+  Accounts.xml
   EconPlusLedger.xml
   EconPlusOperations.xml
   EconPlusAdvanced.xml
+  EconPlusExpansion.xml
+  EconPlusMarket.xml
+  EconPlusInvest.xml
 AuditExports/
   EconPlus-Audit-YYYYMMDD-HHMMSS.csv
 ```

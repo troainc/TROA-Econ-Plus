@@ -1,6 +1,6 @@
 # TROA Econ+ Roadmap
 
-## Phase 10 - Banking expansion (implemented in v0.9.5-alpha)
+## Phase 10 - Banking expansion (implemented)
 
 - Durable account recovery, Keen reconciliation, signed backups, and compensating rollback.
 - Offline/name payments, named accounts, schedules, faction treasuries, and maintenance mode.
@@ -25,15 +25,16 @@ stock exchange are owned by Econ+ and surfaced through chat, the plugin API, and
   (needs live-server verification).
 - [x] Stage 5 - Investment layer: abstract shares/indices with simulated drift + flow pricing,
   portfolios, `!econ invest` commands, `IEconPlusInvestApi`, and a live `Exchange` LCD ticker.
-- [ ] Stage 6 - Hardening, documentation, and versioned release.
+- [x] Stage 6 - Hardening, documentation, and versioned release (`v1.2.0-alpha`).
 
 Every phase is implemented through chat commands, XML configuration, and the server-side plugin API. Econ+ will not add a custom UI.
 
 ## Current status
 
-- Current build: `v0.9.0-alpha`
+- Current build: `v1.2.0-alpha`
 - Build validation: .NET Framework 4.8 x64 build completed with zero warnings and zero errors.
-- Package: `TROA-Econ-Plus-v0.9.0-alpha.zip`
+- Package: `TROA-Econ-Plus-v1.2.0-alpha.zip`
+- Self-tests: Keen boundary, escrow contract, commodity market, and investment exchange suites all pass.
 - Architecture: Torch server plugin using commands, XML configuration, and the server-side API only; no custom UI or client mod.
 - Implemented scope: Phases 1–9 are implemented in source. Production validation remains required before the alpha designation can be removed.
 
