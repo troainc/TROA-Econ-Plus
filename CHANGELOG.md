@@ -1,5 +1,21 @@
 # TROA Econ+ Changelog
 
+## v1.1.0-alpha.7 - Physical Goods Delivery (Ecosystem Stage 4b)
+
+- Adds optional physical delivery to the commodity market (`EnablePhysicalDelivery`, default off):
+  when enabled, buying deposits real Space Engineers items (ores/ingots/components) into the
+  player's character inventory and selling removes them, instead of tracking a virtual position.
+- Uses the Space Engineers inventory system only (add/remove items on the game thread) - kept
+  strictly separate from the credit/banking boundary; item movement is never money.
+- Dupe-safe ordering: on a sell the goods are removed before payment and restored if payment
+  fails; on a buy delivery happens after settlement and the credits are refunded if delivery
+  fails. Buys pre-check inventory space before charging.
+- Adds `EconomyGoodsDelivery` and a demand-only market-pressure path for physical trades; the
+  plugin-API market methods honour the same delivery mode.
+- Verified: Release build zero warnings/errors; boundary self-test 2/2; escrow 21/21; market
+  13/13. The inventory-move path is compile- and API-verified but still needs live-server
+  testing (no Space Engineers session is available in the build environment).
+
 ## v1.1.0-alpha.6 - Commodity Market (Ecosystem Stage 4)
 
 - Adds a dynamic commodity market: prices float on supply and demand (net buying raises a

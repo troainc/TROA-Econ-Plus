@@ -99,6 +99,7 @@
   <MarketDecayPercentPerPass>2</MarketDecayPercentPerPass>
   <MaximumTradeQuantity>1000000</MaximumTradeQuantity>
   <MarketMakerUsesTreasury>true</MarketMakerUsesTreasury>
+  <EnablePhysicalDelivery>false</EnablePhysicalDelivery>
   <EnableEconomyReports>true</EnableEconomyReports>
   <InactiveAccountDays>30</InactiveAccountDays>
   <EconomySnapshotIntervalHours>6</EconomySnapshotIntervalHours>

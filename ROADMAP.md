@@ -20,8 +20,9 @@ stock exchange are owned by Econ+ and surfaced through chat, the plugin API, and
   panel engine (station/exchange boards receive live rates in Stages 4-5).
 - [x] Stage 4 - Commodity market with dynamic supply/demand pricing: credit-settled positions,
   proximity-gated `!econ trade` commands, `IEconPlusMarketApi`, and live `Station` LCD rates.
-- [ ] Stage 4b - Physical goods delivery (move real SE items on buy/sell) via the SE inventory
-  system, config-gated and isolated from the credit boundary.
+- [x] Stage 4b - Physical goods delivery: optional `EnablePhysicalDelivery` moves real SE items
+  on buy/sell via the inventory system, dupe-safe and isolated from the credit boundary
+  (needs live-server verification).
 - [ ] Stage 5 - Investment layer (abstract shares/indices with portfolios).
 - [ ] Stage 6 - Hardening, documentation, and versioned release.
 
