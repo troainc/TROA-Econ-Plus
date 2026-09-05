@@ -6,6 +6,20 @@
 - Offline/name payments, named accounts, schedules, faction treasuries, and maintenance mode.
 - Expanded lending, fraud signals, reports, LCD templates, Discord banking notices, and API v2.
 
+## Phase 11 - Full ecosystem (in progress)
+
+Makes Econ+ a self-contained economy: native Space Engineers is used only to add/remove credits
+and show in-game messages, while accounts, banks, trade stations, and a dynamic supply/demand
+stock exchange are owned by Econ+ and surfaced through chat, the plugin API, and LCD panels.
+
+- [x] Stage 1 - Keen boundary lockdown: all credit movement routes through the internal balance
+  service; native banking limited to the mirror; `!econadmin boundarytest` enforces it.
+- [ ] Stage 2 - Unified in-game messaging for asynchronous economy events.
+- [ ] Stage 3 - LCD ecosystem displays (player, bank, trade station, exchange ticker).
+- [ ] Stage 4 - Commodity market with dynamic supply/demand pricing (chat + plugin API).
+- [ ] Stage 5 - Investment layer (abstract shares/indices with portfolios).
+- [ ] Stage 6 - Hardening, documentation, and versioned release.
+
 Every phase is implemented through chat commands, XML configuration, and the server-side plugin API. Econ+ will not add a custom UI.
 
 ## Current status

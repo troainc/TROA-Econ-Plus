@@ -1,5 +1,20 @@
 # TROA Econ+ Changelog
 
+## v1.1.0-alpha.3 - Keen Boundary Lockdown (Ecosystem Stage 1)
+
+- Confirms Econ+ is the sole authoritative owner of credit balances; the native Space Engineers
+  economy is now used only to add/remove credits (balance mirror) and show in-game messages.
+- Routes the remaining reconciliation paths (Keen drift compare, drift repair, single-account
+  import) through `EconomyBalanceService`, so all `MyBankingSystem` access lives in one file.
+- Removes dead native-banking code: unused faction-account/identity helpers in the transfer,
+  operations, and loan services, and the unused `NativeEconomyBankingGateway` plus the API
+  constructors that defaulted to it. No credit path relied on them.
+- Adds `EconomyBoundarySelfTest` and `!econadmin boundarytest`, which scan the compiled plugin
+  IL and fail if any type other than the balance mirror references native Keen banking.
+- Verified: boundary self-test passes (2/2), escrow contract self-test unchanged (21/21),
+  Release build with zero warnings/errors.
+- Documents the Keen boundary and the permitted native calls in `ARCHITECTURE.md`.
+
 ## v0.9.5-alpha - Full Banking Expansion
 
 - Adds ledger-based account recovery preview/rebuild with explicit confirmation and pre-recovery signed backups.
