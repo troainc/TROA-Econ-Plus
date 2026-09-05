@@ -91,6 +91,14 @@
   <LcdRefreshSeconds>30</LcdRefreshSeconds>
   <LcdRecentTransactions>5</LcdRecentTransactions>
   <DefaultLcdTemplate>Detailed</DefaultLcdTemplate>
+  <EnableCommodityMarket>true</EnableCommodityMarket>
+  <StationNameTag>[ECON+ STATION]</StationNameTag>
+  <StationRadiusMeters>150</StationRadiusMeters>
+  <RequireStationProximity>true</RequireStationProximity>
+  <MarketPollSeconds>300</MarketPollSeconds>
+  <MarketDecayPercentPerPass>2</MarketDecayPercentPerPass>
+  <MaximumTradeQuantity>1000000</MaximumTradeQuantity>
+  <MarketMakerUsesTreasury>true</MarketMakerUsesTreasury>
   <EnableEconomyReports>true</EnableEconomyReports>
   <InactiveAccountDays>30</InactiveAccountDays>
   <EconomySnapshotIntervalHours>6</EconomySnapshotIntervalHours>

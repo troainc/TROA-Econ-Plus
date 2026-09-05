@@ -1,5 +1,24 @@
 # TROA Econ+ Changelog
 
+## v1.1.0-alpha.6 - Commodity Market (Ecosystem Stage 4)
+
+- Adds a dynamic commodity market: prices float on supply and demand (net buying raises a
+  commodity's price, net selling lowers it), bounded by per-commodity min/max and mean-reverting
+  to base over time (`EconomyMarketStore`, `EconomyMarketService`).
+- Trades are credit-settled through the authoritative Econ+ accounts with the treasury acting as
+  the market maker, so credits are conserved (buys pay the treasury; sells are funded by it).
+- Adds player commands `!econ trade`, `trade quote`, `trade buy`, `trade sell`, and
+  `trade holdings`; buy/sell are gated to players near a trade station (a grid named with the
+  configurable `StationNameTag`, within `StationRadiusMeters`).
+- Adds a plugin-API market surface (`IEconPlusMarketApi`: board, quote, buy, sell) and the
+  `CommodityMarket` capability so consumers such as Hangar+ can price and settle trades.
+- Feeds live rates into the `Station` LCD template and adds an `EconomyMarketSelfTest`
+  (`!econadmin markettest`) covering pricing monotonicity, bounds, holdings, and decay.
+- Adds market configuration fields with safe defaults. Physical goods delivery (moving real SE
+  items) is intentionally out of this stage and arrives in Stage 4b.
+- Verified: Release build zero warnings/errors; boundary self-test 2/2; escrow self-test 21/21;
+  market self-test 13/13.
+
 ## v1.1.0-alpha.5 - LCD Ecosystem Displays (Ecosystem Stage 3)
 
 - Adds three LCD templates to the existing panel engine: `Bank` (balance, credit score, and all

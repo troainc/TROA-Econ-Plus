@@ -18,7 +18,10 @@ stock exchange are owned by Econ+ and surfaced through chat, the plugin API, and
   events: payments, scheduled runs, treasury payouts, and loan reminders, via Torch chat.
 - [x] Stage 3 - LCD ecosystem displays: `Bank`, `Station`, and `Exchange` templates added to the
   panel engine (station/exchange boards receive live rates in Stages 4-5).
-- [ ] Stage 4 - Commodity market with dynamic supply/demand pricing (chat + plugin API).
+- [x] Stage 4 - Commodity market with dynamic supply/demand pricing: credit-settled positions,
+  proximity-gated `!econ trade` commands, `IEconPlusMarketApi`, and live `Station` LCD rates.
+- [ ] Stage 4b - Physical goods delivery (move real SE items on buy/sell) via the SE inventory
+  system, config-gated and isolated from the credit boundary.
 - [ ] Stage 5 - Investment layer (abstract shares/indices with portfolios).
 - [ ] Stage 6 - Hardening, documentation, and versioned release.
 
