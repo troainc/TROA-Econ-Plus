@@ -1,5 +1,16 @@
 # TROA Econ+ Changelog
 
+## v1.1.0-alpha.4 - Unified In-Game Messaging (Ecosystem Stage 2)
+
+- Adds `EconomyMessageService`, a single server-to-player in-game message channel for
+  asynchronous economy events, delivered through the Torch chat manager (not native banking).
+- Notifies players of received payments, sent payments (off by default), executed scheduled
+  payments, treasury payouts (rewards/payroll/bounties/loan disbursement), and loan reminders.
+- Adds per-event configuration toggles and a configurable message colour; delivery is
+  best-effort and never affects authoritative balances or transaction state.
+- Keeps the Keen boundary intact: messaging is Torch chat only (boundary self-test still 2/2,
+  escrow self-test 21/21, Release build zero warnings/errors).
+
 ## v1.1.0-alpha.3 - Keen Boundary Lockdown (Ecosystem Stage 1)
 
 - Confirms Econ+ is the sole authoritative owner of credit balances; the native Space Engineers

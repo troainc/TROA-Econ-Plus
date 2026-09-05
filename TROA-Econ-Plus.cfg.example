@@ -24,6 +24,12 @@
   <EnableMigrationImports>true</EnableMigrationImports>
   <MigrationImportDirectory>Imports</MigrationImportDirectory>
   <InGameDisplayName>Econ+</InGameDisplayName>
+  <EnableInGameMessages>true</EnableInGameMessages>
+  <MessageOnPaymentReceived>true</MessageOnPaymentReceived>
+  <MessageOnPaymentSent>false</MessageOnPaymentSent>
+  <MessageOnScheduledPayment>true</MessageOnScheduledPayment>
+  <MessageOnLoanReminder>true</MessageOnLoanReminder>
+  <InGameMessageFont>Green</InGameMessageFont>
   <EnablePlayerTransfers>true</EnablePlayerTransfers>
   <MinimumTransferCredits>1</MinimumTransferCredits>
   <MaximumTransferCredits>1000000000</MaximumTransferCredits>
