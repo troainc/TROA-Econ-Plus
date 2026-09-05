@@ -23,7 +23,8 @@ stock exchange are owned by Econ+ and surfaced through chat, the plugin API, and
 - [x] Stage 4b - Physical goods delivery: optional `EnablePhysicalDelivery` moves real SE items
   on buy/sell via the inventory system, dupe-safe and isolated from the credit boundary
   (needs live-server verification).
-- [ ] Stage 5 - Investment layer (abstract shares/indices with portfolios).
+- [x] Stage 5 - Investment layer: abstract shares/indices with simulated drift + flow pricing,
+  portfolios, `!econ invest` commands, `IEconPlusInvestApi`, and a live `Exchange` LCD ticker.
 - [ ] Stage 6 - Hardening, documentation, and versioned release.
 
 Every phase is implemented through chat commands, XML configuration, and the server-side plugin API. Econ+ will not add a custom UI.

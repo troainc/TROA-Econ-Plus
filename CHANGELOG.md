@@ -1,5 +1,22 @@
 # TROA Econ+ Changelog
 
+## v1.1.0-alpha.8 - Investment Exchange (Ecosystem Stage 5)
+
+- Adds an investment exchange of abstract shares and indices (`EconomyInvestStore`,
+  `EconomyInvestService`): prices move both on player flow (buying raises, selling lowers) and on
+  a simulated drift that random-walks each tick, so prices live between trades.
+- Trades are credit-settled through the authoritative accounts with the treasury as market maker,
+  exactly like the commodity market; instruments are abstract, so there is no physical delivery.
+- Adds player commands `!econ invest`, `invest quote`, `invest buy`, `invest sell`, and
+  `invest portfolio`; per-player positions are held in the invest store.
+- Adds a plugin-API exchange surface (`IEconPlusInvestApi`: board, quote, buy, sell) and the
+  `InvestmentExchange` capability.
+- Feeds a live ticker (price and change) into the `Exchange` LCD template and adds an
+  `EconomyInvestSelfTest` (`!econadmin investtest`) covering pricing, drift bounds, and portfolio.
+- Adds investment configuration fields with safe defaults.
+- Verified: Release build zero warnings/errors; boundary 2/2; escrow 21/21; market 13/13;
+  invest 13/13.
+
 ## v1.1.0-alpha.7 - Physical Goods Delivery (Ecosystem Stage 4b)
 
 - Adds optional physical delivery to the commodity market (`EnablePhysicalDelivery`, default off):

@@ -100,6 +100,12 @@
   <MaximumTradeQuantity>1000000</MaximumTradeQuantity>
   <MarketMakerUsesTreasury>true</MarketMakerUsesTreasury>
   <EnablePhysicalDelivery>false</EnablePhysicalDelivery>
+  <EnableInvestmentExchange>true</EnableInvestmentExchange>
+  <InvestPollSeconds>600</InvestPollSeconds>
+  <InvestDriftRetain>0.9</InvestDriftRetain>
+  <InvestMaxDrift>0.6</InvestMaxDrift>
+  <InvestDemandDecayPercent>3</InvestDemandDecayPercent>
+  <MaximumInvestQuantity>1000000</MaximumInvestQuantity>
   <EnableEconomyReports>true</EnableEconomyReports>
   <InactiveAccountDays>30</InactiveAccountDays>
   <EconomySnapshotIntervalHours>6</EconomySnapshotIntervalHours>
