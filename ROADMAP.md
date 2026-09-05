@@ -16,7 +16,8 @@ stock exchange are owned by Econ+ and surfaced through chat, the plugin API, and
   service; native banking limited to the mirror; `!econadmin boundarytest` enforces it.
 - [x] Stage 2 - Unified in-game messaging (`EconomyMessageService`) for asynchronous economy
   events: payments, scheduled runs, treasury payouts, and loan reminders, via Torch chat.
-- [ ] Stage 3 - LCD ecosystem displays (player, bank, trade station, exchange ticker).
+- [x] Stage 3 - LCD ecosystem displays: `Bank`, `Station`, and `Exchange` templates added to the
+  panel engine (station/exchange boards receive live rates in Stages 4-5).
 - [ ] Stage 4 - Commodity market with dynamic supply/demand pricing (chat + plugin API).
 - [ ] Stage 5 - Investment layer (abstract shares/indices with portfolios).
 - [ ] Stage 6 - Hardening, documentation, and versioned release.

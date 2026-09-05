@@ -1,5 +1,17 @@
 # TROA Econ+ Changelog
 
+## v1.1.0-alpha.5 - LCD Ecosystem Displays (Ecosystem Stage 3)
+
+- Adds three LCD templates to the existing panel engine: `Bank` (balance, credit score, and all
+  managed named/faction accounts), `Station` (trade-station commodity board), and `Exchange`
+  (share/index ticker board).
+- `Station` and `Exchange` are global boards: they render on `[ECON+]`-tagged panels regardless
+  of the panel owner and read an optional CustomData `StationId=` tag. Their live rates are
+  populated by the commodity market and investment services in Stages 4 and 5; until then they
+  show a clear "activates with the market update" placeholder.
+- Existing `Detailed`, `Compact`, `Loan`, `Faction`, and `Market` templates are unchanged.
+- Verified: Release build zero warnings/errors; boundary self-test 2/2; escrow self-test 21/21.
+
 ## v1.1.0-alpha.4 - Unified In-Game Messaging (Ecosystem Stage 2)
 
 - Adds `EconomyMessageService`, a single server-to-player in-game message channel for
