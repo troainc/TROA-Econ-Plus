@@ -1,5 +1,11 @@
 # TROA Econ+ Roadmap
 
+## Phase 10 - Banking expansion (implemented in v0.9.5-alpha)
+
+- Durable account recovery, Keen reconciliation, signed backups, and compensating rollback.
+- Offline/name payments, named accounts, schedules, faction treasuries, and maintenance mode.
+- Expanded lending, fraud signals, reports, LCD templates, Discord banking notices, and API v2.
+
 Every phase is implemented through chat commands, XML configuration, and the server-side plugin API. Econ+ will not add a custom UI.
 
 ## Current status

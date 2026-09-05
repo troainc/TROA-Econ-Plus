@@ -8,6 +8,21 @@
   <!-- Optional compatibility mirror. Econ+ remains authoritative if Keen banking is unavailable. -->
   <MirrorBalancesToKeen>true</MirrorBalancesToKeen>
   <NewAccountStartingCredits>10000</NewAccountStartingCredits>
+  <EnableOfflinePayments>true</EnableOfflinePayments>
+  <EnableNamedAccounts>true</EnableNamedAccounts>
+  <MaximumNamedAccountsPerPlayer>5</MaximumNamedAccountsPerPlayer>
+  <EnableScheduledPayments>true</EnableScheduledPayments>
+  <ScheduledPaymentPollSeconds>60</ScheduledPaymentPollSeconds>
+  <EnableFactionAccounts>true</EnableFactionAccounts>
+  <FactionApprovalThresholdCredits>1000000</FactionApprovalThresholdCredits>
+  <FactionDailySpendingLimitCredits>10000000</FactionDailySpendingLimitCredits>
+  <EnableMaintenanceMode>true</EnableMaintenanceMode>
+  <EnableKeenReconciliation>true</EnableKeenReconciliation>
+  <EnableAccountRecovery>true</EnableAccountRecovery>
+  <EnableSignedBackups>true</EnableSignedBackups>
+  <!-- Place migration CSV/XML files only in TROA-Econ-PlusData/Imports. Imports require explicit IMPORT confirmation. -->
+  <EnableMigrationImports>true</EnableMigrationImports>
+  <MigrationImportDirectory>Imports</MigrationImportDirectory>
   <InGameDisplayName>Econ+</InGameDisplayName>
   <EnablePlayerTransfers>true</EnablePlayerTransfers>
   <MinimumTransferCredits>1</MinimumTransferCredits>
@@ -21,7 +36,7 @@
   <ExemptSourcePlugins></ExemptSourcePlugins>
   <TreasuryFactionTag>ADMIN</TreasuryFactionTag>
   <EnablePluginApi>true</EnablePluginApi>
-  <ApiVersion>1.1.0</ApiVersion>
+  <ApiVersion>2.0.0</ApiVersion>
   <EnableEscrow>true</EnableEscrow>
   <MaximumEscrowCredits>1000000000</MaximumEscrowCredits>
   <EscrowExpirationHours>72</EscrowExpirationHours>
@@ -58,11 +73,29 @@
   <MaximumLoanTermDays>30</MaximumLoanTermDays>
   <LoanPaymentIntervalDays>7</LoanPaymentIntervalDays>
   <MaximumActiveLoansPerPlayer>1</MaximumActiveLoansPerPlayer>
+  <LoanGracePeriodDays>3</LoanGracePeriodDays>
+  <LoanLateFeePercent>2</LoanLateFeePercent>
+  <MinimumLoanCreditScore>500</MinimumLoanCreditScore>
+  <EnableLoanRefinancing>true</EnableLoanRefinancing>
+  <EnableAutomaticLoanPayments>false</EnableAutomaticLoanPayments>
+  <LoanReminderHours>24</LoanReminderHours>
   <!-- Name an owned LCD/text surface with this tag to show the owner's account dashboard. -->
   <EnablePlayerLcdDisplays>true</EnablePlayerLcdDisplays>
   <LcdNameTag>[ECON+]</LcdNameTag>
   <LcdRefreshSeconds>30</LcdRefreshSeconds>
   <LcdRecentTransactions>5</LcdRecentTransactions>
+  <DefaultLcdTemplate>Detailed</DefaultLcdTemplate>
+  <EnableEconomyReports>true</EnableEconomyReports>
+  <InactiveAccountDays>30</InactiveAccountDays>
+  <EconomySnapshotIntervalHours>6</EconomySnapshotIntervalHours>
+  <EconomySnapshotRetentionDays>365</EconomySnapshotRetentionDays>
+  <EnableFraudDetection>true</EnableFraudDetection>
+  <FailedPaymentAlertCount>5</FailedPaymentAlertCount>
+  <AccountFunnelRecipientCount>5</AccountFunnelRecipientCount>
+  <UnusualBalanceChangePercent>50</UnusualBalanceChangePercent>
+  <!-- Optional separate staff-controlled channel. Discord webhooks cannot guarantee a true user DM. -->
+  <EnablePrivateDiscordBanking>false</EnablePrivateDiscordBanking>
+  <DiscordBankingWebhookUrl></DiscordBankingWebhookUrl>
   <EnableDiscordWebhook>false</EnableDiscordWebhook>
   <DiscordWebhookUrl></DiscordWebhookUrl>
   <DiscordWebhookName>Econ+</DiscordWebhookName>
