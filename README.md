@@ -2,16 +2,16 @@
 
 TROA Econ+ is a server-side Torch economy plugin for Space Engineers. It provides durable accounting, escrow, treasury policy, and a versioned integration API for Hangar+ and other TROA plugins. It has no client mod, desktop UI, web UI, WPF, or WinForms dependency.
 
-> Current release: `v1.2.6-alpha`
+> Current release: `v1.3.0-alpha`
 > Runtime: Torch / .NET Framework 4.8 / x64  
 > Interface: Space Engineers chat commands, XML configuration, LCD panels, and server-side plugin API only
 
-Econ+ is a self-contained economic ecosystem. Native Space Engineers ("Keen") banking is used only to add/remove credits (an optional balance mirror) and to show in-game messages; accounts, banks, treasuries, a dynamic commodity market, and an investment exchange are all owned by Econ+. The `!econadmin boundarytest` command verifies, by scanning the compiled plugin, that no code path outside the balance mirror touches native Keen banking.
+Econ+ is a self-contained economic ecosystem. Native Space Engineers ("Keen") banking is used only to add/remove credits (an optional balance mirror) and to show in-game messages; accounts, banks, treasuries, a dynamic commodity market, and an investment exchange are all owned by Econ+. The currency name and symbol are configurable (`CurrencyName`/`CurrencySymbol`), and asynchronous notices (payments, trade fills, dividends, alerts) can pop as corner HUD notifications as well as chat (`EnableHudNotifications`). The `!econadmin boundarytest` command verifies, by scanning the compiled plugin, that no code path outside the balance mirror touches native Keen banking.
 
 ## Installation
 
 1. Back up the world, `TROA-Econ-Plus.cfg`, and `TROA-Econ-PlusData`.
-2. Install `releases/TROA-Econ-Plus-v1.2.6-alpha.zip` through Torch.
+2. Install `releases/TROA-Econ-Plus-v1.3.0-alpha.zip` through Torch.
 3. Restart Torch so the updated command modules and API are loaded.
 4. Review the generated configuration before enabling payroll, Nexus safeguards, or credit products.
 5. Run `!econadmin status`, `!econadmin escrowtest`, and `!econadmin webhook test` where applicable.

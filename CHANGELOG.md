@@ -1,5 +1,18 @@
 # TROA Econ+ Changelog
 
+## v1.3.0-alpha - Player-Experience Release (Custom Currency and HUD)
+
+Rolls up the player-experience expansion (price trends and P&L, alerts and limit orders, market
+events/news, leaderboards, dividends and savings interest) and adds:
+
+- Configurable currency: `CurrencyName` and `CurrencySymbol` rename "credits"/"cr" across every
+  player-facing amount in commands, LCD panels, and messages.
+- Corner HUD notifications for asynchronous notices (payments, trade fills, dividends, alerts,
+  loan reminders) alongside chat, via the visual-script notification API (`EnableHudNotifications`,
+  default on). Resolving the runtime identity is a world read, not native banking.
+- Verified: Release build zero warnings/errors; boundary 2/2; escrow 21/21; market 18/18;
+  invest 15/15.
+
 ## v1.2.6-alpha - Dividends and Savings Interest
 
 - Adds optional exchange dividends (`EnableDividends`, default off): each instrument can pay a

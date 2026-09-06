@@ -24,6 +24,9 @@
   <EnableMigrationImports>true</EnableMigrationImports>
   <MigrationImportDirectory>Imports</MigrationImportDirectory>
   <InGameDisplayName>Econ+</InGameDisplayName>
+  <CurrencyName>credits</CurrencyName>
+  <CurrencySymbol>cr</CurrencySymbol>
+  <EnableHudNotifications>true</EnableHudNotifications>
   <EnableInGameMessages>true</EnableInGameMessages>
   <MessageOnPaymentReceived>true</MessageOnPaymentReceived>
   <MessageOnPaymentSent>false</MessageOnPaymentSent>
