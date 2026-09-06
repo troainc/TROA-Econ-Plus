@@ -1,5 +1,17 @@
 # TROA Econ+ Changelog
 
+## v1.2.6-alpha - Dividends and Savings Interest
+
+- Adds optional exchange dividends (`EnableDividends`, default off): each instrument can pay a
+  per-share dividend, credited to shareholders from the treasury once per configured interval,
+  idempotent per interval window and bounded per pass. Default instruments carry a small dividend.
+- Adds optional savings interest (`EnableSavingsInterest`, default off): savings named accounts
+  accrue interest from the treasury, prorated from the annual rate over the configured interval.
+- Both are treasury-funded, so credits stay conserved, and both run on the existing scheduled pass
+  through `EconomyBalanceService`/treasury payouts - the Keen boundary is unaffected.
+- Verified: Release build zero warnings/errors; boundary 2/2; escrow 21/21; market 18/18;
+  invest 15/15.
+
 ## v1.2.5-alpha - Market Events, News, and Leaderboards
 
 - Adds periodic market events: with a configurable chance a commodity gets a supply shock

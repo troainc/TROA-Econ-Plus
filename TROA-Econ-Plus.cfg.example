@@ -124,6 +124,11 @@
   <MarketEventChancePercent>25</MarketEventChancePercent>
   <MarketEventMagnitude>0.8</MarketEventMagnitude>
   <EnableLeaderboards>true</EnableLeaderboards>
+  <EnableDividends>false</EnableDividends>
+  <DividendIntervalHours>24</DividendIntervalHours>
+  <EnableSavingsInterest>false</EnableSavingsInterest>
+  <SavingsInterestPercent>2</SavingsInterestPercent>
+  <SavingsInterestIntervalHours>24</SavingsInterestIntervalHours>
   <EnableEconomyReports>true</EnableEconomyReports>
   <InactiveAccountDays>30</InactiveAccountDays>
   <EconomySnapshotIntervalHours>6</EconomySnapshotIntervalHours>

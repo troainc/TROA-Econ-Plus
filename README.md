@@ -2,7 +2,7 @@
 
 TROA Econ+ is a server-side Torch economy plugin for Space Engineers. It provides durable accounting, escrow, treasury policy, and a versioned integration API for Hangar+ and other TROA plugins. It has no client mod, desktop UI, web UI, WPF, or WinForms dependency.
 
-> Current release: `v1.2.5-alpha`
+> Current release: `v1.2.6-alpha`
 > Runtime: Torch / .NET Framework 4.8 / x64  
 > Interface: Space Engineers chat commands, XML configuration, LCD panels, and server-side plugin API only
 
@@ -11,7 +11,7 @@ Econ+ is a self-contained economic ecosystem. Native Space Engineers ("Keen") ba
 ## Installation
 
 1. Back up the world, `TROA-Econ-Plus.cfg`, and `TROA-Econ-PlusData`.
-2. Install `releases/TROA-Econ-Plus-v1.2.5-alpha.zip` through Torch.
+2. Install `releases/TROA-Econ-Plus-v1.2.6-alpha.zip` through Torch.
 3. Restart Torch so the updated command modules and API are loaded.
 4. Review the generated configuration before enabling payroll, Nexus safeguards, or credit products.
 5. Run `!econadmin status`, `!econadmin escrowtest`, and `!econadmin webhook test` where applicable.
@@ -86,7 +86,7 @@ Players trade with `!econ trade` while near a trade station: a grid named with t
 
 ## Investment exchange
 
-Econ+ also runs an investment exchange of abstract shares and indices. Their prices move both on player flow and on a simulated drift that random-walks each tick within per-instrument bounds, so the board is alive between trades. Instruments are abstract, so there is no physical delivery; trades are credit-settled exactly like the commodity market. Players use `!econ invest`, positions appear in `!econ invest portfolio`, and `Template=Exchange` LCD panels show the live ticker with price and change. Consumer plugins can use `IEconPlusInvestApi` after confirming the `InvestmentExchange` capability.
+Econ+ also runs an investment exchange of abstract shares and indices. Their prices move both on player flow and on a simulated drift that random-walks each tick within per-instrument bounds, so the board is alive between trades. Instruments are abstract, so there is no physical delivery; trades are credit-settled exactly like the commodity market. Players use `!econ invest`, positions appear in `!econ invest portfolio`, and `Template=Exchange` LCD panels show the live ticker with price and change. Instruments can pay optional treasury-funded dividends to shareholders (`EnableDividends`), and savings named accounts can accrue optional treasury-funded interest (`EnableSavingsInterest`); both are off by default and keep credits conserved. Consumer plugins can use `IEconPlusInvestApi` after confirming the `InvestmentExchange` capability.
 
 ## Recovery, reconciliation, and rollback
 
