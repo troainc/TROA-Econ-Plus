@@ -1,5 +1,23 @@
 # TROA Econ+ Changelog
 
+## v1.2.2-alpha - Catalog Browsing, Panel Curation, Exports, and LCD Polish
+
+- `!econ trade` is now paginated ("Page P/T"); `!econ trade <page>` flips pages and
+  `!econ trade search <text>` filters by symbol or name, so the whole catalog is reachable.
+- Station and Exchange LCD panels are curated per panel from Custom Data: `Items=IRON,GOLD`
+  (explicit symbols) and/or `Types=Ore,Ingot` (categories), plus `Title=` to rename a panel. A
+  panel with no filter shows the full board, so different stations can show different goods.
+- Every scan exports owner reference files to the Econ+ data folder - `MarketCatalog.csv` (every
+  commodity symbol, item, and price) and `ExchangeCatalog.csv` - so nothing has to be remembered;
+  `!econadmin marketscan` reports the export.
+- LCD panels render in a cleaner style: monospace columns, right-aligned prices, per-board colour
+  schemes (market green, exchange amber, bank cyan), title bars, dividers, an "updated" line, and
+  up/down change arrows on the exchange.
+- All listed items use dynamic pricing (scanned items carry elasticity and demand scale); no item
+  is statically priced.
+- Verified: Release build zero warnings/errors; boundary 2/2; escrow 21/21; market 15/15;
+  invest 13/13.
+
 ## v1.2.1-alpha - Real Item Catalog and Physical Delivery
 
 - The commodity market now populates from the server's actual physical item definitions - Keen

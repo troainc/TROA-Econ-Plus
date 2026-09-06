@@ -29,14 +29,16 @@ stock exchange are owned by Econ+ and surfaced through chat, the plugin API, and
 - [x] Stage 7 - Real item catalog: the commodity market is populated from the server's actual
   physical item definitions (Keen and mods) with a Torch startup log; physical delivery on by
   default (`v1.2.1-alpha`).
+- [x] Stage 8 - Catalog browsing (`!econ trade` pages + search), per-panel LCD curation
+  (`Items=`/`Types=`/`Title=`), CSV catalog exports, and a prettier LCD look (`v1.2.2-alpha`).
 
 Every phase is implemented through chat commands, XML configuration, and the server-side plugin API. Econ+ will not add a custom UI.
 
 ## Current status
 
-- Current build: `v1.2.1-alpha`
+- Current build: `v1.2.2-alpha`
 - Build validation: .NET Framework 4.8 x64 build completed with zero warnings and zero errors.
-- Package: `TROA-Econ-Plus-v1.2.1-alpha.zip`
+- Package: `TROA-Econ-Plus-v1.2.2-alpha.zip`
 - Self-tests: Keen boundary, escrow contract, commodity market, and investment exchange suites all pass.
 - Architecture: Torch server plugin using commands, XML configuration, and the server-side API only; no custom UI or client mod.
 - Implemented scope: Phases 1–9 are implemented in source. Production validation remains required before the alpha designation can be removed.
