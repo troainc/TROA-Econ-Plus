@@ -1,5 +1,16 @@
 # TROA Econ+ Changelog
 
+## v1.2.3-alpha - Price Trends and Portfolio P&L
+
+- Commodities now show a 24h price change: each commodity keeps a daily reference (open) price
+  that rolls once a day, and the change appears on `!econ trade`, `!econ trade quote`, and the
+  `Station` LCD (a new change column), matching the exchange's existing change display.
+- Holdings and portfolios now track cost basis: buys update a weighted average cost, sells leave
+  it unchanged, and `!econ trade holdings` / `!econ invest portfolio` show per-line and total
+  unrealised profit/loss so players can see whether they are up or down.
+- Verified: Release build zero warnings/errors; boundary 2/2; escrow 21/21; market 18/18;
+  invest 15/15 (new average-cost checks).
+
 ## v1.2.2-alpha - Catalog Browsing, Panel Curation, Exports, and LCD Polish
 
 - `!econ trade` is now paginated ("Page P/T"); `!econ trade <page>` flips pages and

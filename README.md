@@ -2,7 +2,7 @@
 
 TROA Econ+ is a server-side Torch economy plugin for Space Engineers. It provides durable accounting, escrow, treasury policy, and a versioned integration API for Hangar+ and other TROA plugins. It has no client mod, desktop UI, web UI, WPF, or WinForms dependency.
 
-> Current release: `v1.2.2-alpha`
+> Current release: `v1.2.3-alpha`
 > Runtime: Torch / .NET Framework 4.8 / x64  
 > Interface: Space Engineers chat commands, XML configuration, LCD panels, and server-side plugin API only
 
@@ -11,7 +11,7 @@ Econ+ is a self-contained economic ecosystem. Native Space Engineers ("Keen") ba
 ## Installation
 
 1. Back up the world, `TROA-Econ-Plus.cfg`, and `TROA-Econ-PlusData`.
-2. Install `releases/TROA-Econ-Plus-v1.2.2-alpha.zip` through Torch.
+2. Install `releases/TROA-Econ-Plus-v1.2.3-alpha.zip` through Torch.
 3. Restart Torch so the updated command modules and API are loaded.
 4. Review the generated configuration before enabling payroll, Nexus safeguards, or credit products.
 5. Run `!econadmin status`, `!econadmin escrowtest`, and `!econadmin webhook test` where applicable.
@@ -75,6 +75,8 @@ Econ+ runs a dynamic commodity market for Space Engineers materials. Each commod
 The market lists the server's real item definitions. When the world finishes loading, Econ+ scans `MyDefinitionManager` for every physical item - Keen vanilla and modded - prices each from its vanilla `MinimalPricePerUnit` (with a configurable fallback), stores the exact item type and subtype for delivery, and lists it for trading. A summary is printed to the Torch console at startup (for example, "scanned N physical items found (V vanilla, M modded); market now lists T commodities"), and `!econadmin marketscan` re-runs the scan on demand. Existing commodities are preserved across restarts, so prices and supply/demand state are never reset. Configuration can filter item types, set the price fallback and bounds, and tune elasticity; the `!econ trade` list and `Station` LCD cap their output for large modded catalogs while trading by symbol still works for every item.
 
 The catalog is browsable and exportable. `!econ trade` paginates the full list, `!econ trade <page>` flips pages, and `!econ trade search <text>` filters by symbol or name. Every scan also writes owner reference files into the Econ+ data folder - `MarketCatalog.csv` (every commodity symbol, item, and price) and `ExchangeCatalog.csv` - so nothing has to be memorised.
+
+Prices show a 24h change (a daily reference price that rolls once a day) on `!econ trade`, `!econ trade quote`, and the `Station` LCD. Holdings and the investment portfolio track cost basis, so `!econ trade holdings` and `!econ invest portfolio` show per-line and total unrealised profit and loss.
 
 Players trade with `!econ trade` while near a trade station: a grid named with the configurable `StationNameTag` (default `[ECON+ STATION]`), within `StationRadiusMeters`. `Template=Station` LCD panels show the live board. Physical delivery is on by default (`EnablePhysicalDelivery`): buying deposits the real item into the player's inventory and selling removes it, using only the Space Engineers inventory system and with ordering that prevents duplication before loss. Set it to `false` to trade virtual positions instead. Consumer plugins such as Hangar+ can price and settle trades through `IEconPlusMarketApi` after confirming the `CommodityMarket` capability.
 
