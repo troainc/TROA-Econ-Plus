@@ -2,7 +2,7 @@
 
 TROA Econ+ is a server-side Torch economy plugin for Space Engineers. It provides durable accounting, escrow, treasury policy, and a versioned integration API for Hangar+ and other TROA plugins. It has no client mod, desktop UI, web UI, WPF, or WinForms dependency.
 
-> Current release: `v1.2.4-alpha`
+> Current release: `v1.2.5-alpha`
 > Runtime: Torch / .NET Framework 4.8 / x64  
 > Interface: Space Engineers chat commands, XML configuration, LCD panels, and server-side plugin API only
 
@@ -11,7 +11,7 @@ Econ+ is a self-contained economic ecosystem. Native Space Engineers ("Keen") ba
 ## Installation
 
 1. Back up the world, `TROA-Econ-Plus.cfg`, and `TROA-Econ-PlusData`.
-2. Install `releases/TROA-Econ-Plus-v1.2.4-alpha.zip` through Torch.
+2. Install `releases/TROA-Econ-Plus-v1.2.5-alpha.zip` through Torch.
 3. Restart Torch so the updated command modules and API are loaded.
 4. Review the generated configuration before enabling payroll, Nexus safeguards, or credit products.
 5. Run `!econadmin status`, `!econadmin escrowtest`, and `!econadmin webhook test` where applicable.
@@ -54,6 +54,8 @@ Econ+ is a self-contained economic ecosystem. Native Space Engineers ("Keen") ba
 - `!econ invest`, `!econ invest quote|buy|sell <symbol> <qty>`, and `!econ invest portfolio` use the investment exchange.
 - `!econ alert <symbol> gt|lt <price>`, `!econ alerts`, and `!econ alert cancel <id>` set price alerts (a DM when a symbol crosses the price).
 - `!econ order buy|sell <symbol> <qty> <price>`, `!econ orders`, and `!econ order cancel <id>` place standing limit orders that fill automatically. Both auto-route to the commodity market or the exchange by symbol.
+- `!econ top [n]` lists the wealthiest players and `!econ movers` lists the biggest 24h gainers and losers.
+- Periodic market events (supply shocks) move prices, broadcast a headline in chat, and scroll on the `Station` and `Exchange` LCDs.
 - Name an owned text surface with `[ECON+]` (configurable) to display the player's live account dashboard.
 
 ## Standalone accounting and Keen compatibility
@@ -244,6 +246,8 @@ CSV files use `SteamId,Balance,Name`. XML files use an `EconMigrationFile` root 
 !econ order buy|sell <symbol> <qty> <price>
 !econ orders
 !econ order cancel <id>
+!econ top [n]
+!econ movers
 
 !econadmin help
 !econadmin status

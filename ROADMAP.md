@@ -37,7 +37,7 @@ stock exchange are owned by Econ+ and surfaced through chat, the plugin API, and
 - [x] Stage 9 - 24h price change on commodities and cost-basis profit/loss on holdings and
   portfolios (`v1.2.3-alpha`).
 - [x] Stage 10 - Price alerts and standing limit orders (`v1.2.4-alpha`).
-- [ ] Stage 11 - Market events/news, leaderboards, and market movers.
+- [x] Stage 11 - Market events/news, leaderboards, and market movers (`v1.2.5-alpha`).
 - [ ] Stage 12 - Exchange dividends and savings-account interest.
 - [ ] Stage 13 - Custom currency name, HUD notifications, and the `v1.3.0-alpha` release.
 
@@ -45,9 +45,9 @@ Every phase is implemented through chat commands, XML configuration, and the ser
 
 ## Current status
 
-- Current build: `v1.2.4-alpha`
+- Current build: `v1.2.5-alpha`
 - Build validation: .NET Framework 4.8 x64 build completed with zero warnings and zero errors.
-- Package: `TROA-Econ-Plus-v1.2.4-alpha.zip`
+- Package: `TROA-Econ-Plus-v1.2.5-alpha.zip`
 - Self-tests: Keen boundary, escrow contract, commodity market, and investment exchange suites all pass.
 - Architecture: Torch server plugin using commands, XML configuration, and the server-side API only; no custom UI or client mod.
 - Implemented scope: Phases 1–9 are implemented in source. Production validation remains required before the alpha designation can be removed.

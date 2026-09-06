@@ -1,5 +1,19 @@
 # TROA Econ+ Changelog
 
+## v1.2.5-alpha - Market Events, News, and Leaderboards
+
+- Adds periodic market events: with a configurable chance a commodity gets a supply shock
+  (shortage pushes its price up, surplus pushes it down), a headline is broadcast in chat, and the
+  current headline scrolls on the `Station` and `Exchange` LCD panels. Events revert naturally
+  through the existing price decay. Only market pressure and Torch chat are used, so the Keen
+  boundary is unaffected.
+- Adds leaderboards: `!econ top [n]` lists the wealthiest players, and `!econ movers` lists the
+  biggest 24h gainers and losers on the commodity market.
+- Adds `EconomyMarketEventService`, a chat broadcast channel, and configuration for event
+  frequency/magnitude and leaderboards.
+- Verified: Release build zero warnings/errors; boundary 2/2; escrow 21/21; market 18/18;
+  invest 15/15.
+
 ## v1.2.4-alpha - Price Alerts and Limit Orders
 
 - Adds price alerts: `!econ alert <sym> gt|lt <price>` DMs you once when a commodity or instrument

@@ -119,6 +119,11 @@
   <OrderPollSeconds>30</OrderPollSeconds>
   <MaxAlertsPerPlayer>10</MaxAlertsPerPlayer>
   <MaxOrdersPerPlayer>10</MaxOrdersPerPlayer>
+  <EnableMarketEvents>true</EnableMarketEvents>
+  <MarketEventPollSeconds>600</MarketEventPollSeconds>
+  <MarketEventChancePercent>25</MarketEventChancePercent>
+  <MarketEventMagnitude>0.8</MarketEventMagnitude>
+  <EnableLeaderboards>true</EnableLeaderboards>
   <EnableEconomyReports>true</EnableEconomyReports>
   <InactiveAccountDays>30</InactiveAccountDays>
   <EconomySnapshotIntervalHours>6</EconomySnapshotIntervalHours>
