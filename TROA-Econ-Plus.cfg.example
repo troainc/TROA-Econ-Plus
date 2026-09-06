@@ -114,6 +114,11 @@
   <InvestMaxDrift>0.6</InvestMaxDrift>
   <InvestDemandDecayPercent>3</InvestDemandDecayPercent>
   <MaximumInvestQuantity>1000000</MaximumInvestQuantity>
+  <EnableAlerts>true</EnableAlerts>
+  <EnableLimitOrders>true</EnableLimitOrders>
+  <OrderPollSeconds>30</OrderPollSeconds>
+  <MaxAlertsPerPlayer>10</MaxAlertsPerPlayer>
+  <MaxOrdersPerPlayer>10</MaxOrdersPerPlayer>
   <EnableEconomyReports>true</EnableEconomyReports>
   <InactiveAccountDays>30</InactiveAccountDays>
   <EconomySnapshotIntervalHours>6</EconomySnapshotIntervalHours>

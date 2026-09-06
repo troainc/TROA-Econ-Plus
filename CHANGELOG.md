@@ -1,5 +1,20 @@
 # TROA Econ+ Changelog
 
+## v1.2.4-alpha - Price Alerts and Limit Orders
+
+- Adds price alerts: `!econ alert <sym> gt|lt <price>` DMs you once when a commodity or instrument
+  crosses the threshold; `!econ alerts` lists them and `!econ alert cancel <id>` removes one.
+- Adds standing limit orders: `!econ order buy|sell <sym> <qty> <price>` auto-fills a buy when the
+  price falls to the limit or a sell when it rises to the limit; `!econ orders` and
+  `!econ order cancel <id>` manage them.
+- A symbol is routed to the commodity market or the investment exchange automatically. Orders and
+  alerts are processed on a timer on the game thread and settle through the same market/exchange
+  services as manual trades, so the Keen boundary is unaffected. A limit buy that cannot yet fund
+  or deliver stays pending and retries.
+- Adds `EconomyOrdersStore`/`EconomyOrderService`, per-player caps, and configuration.
+- Verified: Release build zero warnings/errors; boundary 2/2; escrow 21/21; market 18/18;
+  invest 15/15.
+
 ## v1.2.3-alpha - Price Trends and Portfolio P&L
 
 - Commodities now show a 24h price change: each commodity keeps a daily reference (open) price
