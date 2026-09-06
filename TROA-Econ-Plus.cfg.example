@@ -99,7 +99,15 @@
   <MarketDecayPercentPerPass>2</MarketDecayPercentPerPass>
   <MaximumTradeQuantity>1000000</MaximumTradeQuantity>
   <MarketMakerUsesTreasury>true</MarketMakerUsesTreasury>
-  <EnablePhysicalDelivery>false</EnablePhysicalDelivery>
+  <EnablePhysicalDelivery>true</EnablePhysicalDelivery>
+  <AutoScanItemsOnLoad>true</AutoScanItemsOnLoad>
+  <IncludeNonPublicItems>false</IncludeNonPublicItems>
+  <MarketItemTypes></MarketItemTypes>
+  <DefaultItemBasePrice>10</DefaultItemBasePrice>
+  <MarketPriceFloorDivisor>4</MarketPriceFloorDivisor>
+  <MarketPriceCeilingMultiplier>5</MarketPriceCeilingMultiplier>
+  <ScannedItemElasticity>0.5</ScannedItemElasticity>
+  <ScannedItemDemandScale>20000</ScannedItemDemandScale>
   <EnableInvestmentExchange>true</EnableInvestmentExchange>
   <InvestPollSeconds>600</InvestPollSeconds>
   <InvestDriftRetain>0.9</InvestDriftRetain>

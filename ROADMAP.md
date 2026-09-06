@@ -26,14 +26,17 @@ stock exchange are owned by Econ+ and surfaced through chat, the plugin API, and
 - [x] Stage 5 - Investment layer: abstract shares/indices with simulated drift + flow pricing,
   portfolios, `!econ invest` commands, `IEconPlusInvestApi`, and a live `Exchange` LCD ticker.
 - [x] Stage 6 - Hardening, documentation, and versioned release (`v1.2.0-alpha`).
+- [x] Stage 7 - Real item catalog: the commodity market is populated from the server's actual
+  physical item definitions (Keen and mods) with a Torch startup log; physical delivery on by
+  default (`v1.2.1-alpha`).
 
 Every phase is implemented through chat commands, XML configuration, and the server-side plugin API. Econ+ will not add a custom UI.
 
 ## Current status
 
-- Current build: `v1.2.0-alpha`
+- Current build: `v1.2.1-alpha`
 - Build validation: .NET Framework 4.8 x64 build completed with zero warnings and zero errors.
-- Package: `TROA-Econ-Plus-v1.2.0-alpha.zip`
+- Package: `TROA-Econ-Plus-v1.2.1-alpha.zip`
 - Self-tests: Keen boundary, escrow contract, commodity market, and investment exchange suites all pass.
 - Architecture: Torch server plugin using commands, XML configuration, and the server-side API only; no custom UI or client mod.
 - Implemented scope: Phases 1–9 are implemented in source. Production validation remains required before the alpha designation can be removed.

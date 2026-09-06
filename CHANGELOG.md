@@ -1,5 +1,25 @@
 # TROA Econ+ Changelog
 
+## v1.2.1-alpha - Real Item Catalog and Physical Delivery
+
+- The commodity market now populates from the server's actual physical item definitions - Keen
+  vanilla and modded - instead of a small hardcoded list. On world load Econ+ scans
+  `MyDefinitionManager`, prices each item from its `MinimalPricePerUnit` (with a configurable
+  fallback), stores the exact item type/subtype for delivery, and lists it for trading.
+- Prints a startup summary to the Torch console, e.g. "scanned N physical items found (V vanilla,
+  M modded); added A, market now lists T commodities." `!econadmin marketscan` re-runs the scan
+  and reports counts in chat.
+- Existing commodities are preserved across restarts (deduped by item type and subtype), so prices
+  and supply/demand state are never reset by a rescan.
+- Physical delivery is now on by default (`EnablePhysicalDelivery=true`): buying deposits the real
+  item into the player's inventory and selling removes it. Delivery failures are logged to the
+  Torch console.
+- Adds catalog configuration (item-type filter, price fallback and bounds, elasticity/scale) and
+  caps the `!econ trade` list and `Station` LCD so large modded catalogs stay readable; trading by
+  symbol works for every item.
+- Verified: Release build zero warnings/errors; boundary 2/2; escrow 21/21; market 15/15;
+  invest 13/13. Physical delivery remains compile- and API-verified pending live-server testing.
+
 ## v1.2.0-alpha - Full Economic Ecosystem
 
 The economy was rebuilt so that Econ+ owns all money state and the native Space Engineers
