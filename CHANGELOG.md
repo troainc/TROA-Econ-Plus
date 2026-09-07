@@ -1,5 +1,20 @@
 # TROA Econ+ Changelog
 
+## v1.3.2-alpha - LCD Styling Fix and Setup Documentation
+
+- LCD panels are now styled once (monospace font, `LcdFontSize`, colours) instead of on every
+  refresh, so a font or size an admin sets by hand is no longer reset each update. New config
+  `LcdFontSize` (default 0.7) tunes the size, and `Style=false` in a panel's Custom Data opts a
+  panel out of Econ+ styling entirely.
+- Station and Exchange boards tighten to 12 rows and keep the news headline to a single line so
+  content fits standard panels.
+- README gains a full setup guide: the item catalog, a category/item reference (ores, ingots,
+  components, ammo, tools, bottles, and how symbols and MarketCatalog.csv work), a note that there
+  are no ship/station item types (a depot is a named grid), depot presets, and the LCD styling
+  controls.
+- Verified: Release build zero warnings/errors; boundary 2/2; escrow 21/21; market 18/18;
+  invest 15/15.
+
 ## v1.3.1-alpha - Player-to-Player Shops
 
 - Adds a player marketplace: sellers list their own goods for other players to buy, on top of the

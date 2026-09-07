@@ -94,6 +94,7 @@
   <LcdRefreshSeconds>30</LcdRefreshSeconds>
   <LcdRecentTransactions>5</LcdRecentTransactions>
   <DefaultLcdTemplate>Detailed</DefaultLcdTemplate>
+  <LcdFontSize>0.7</LcdFontSize>
   <EnableCommodityMarket>true</EnableCommodityMarket>
   <StationNameTag>[ECON+ STATION]</StationNameTag>
   <StationRadiusMeters>150</StationRadiusMeters>

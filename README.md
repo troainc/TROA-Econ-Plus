@@ -2,7 +2,7 @@
 
 TROA Econ+ is a server-side Torch economy plugin for Space Engineers. It provides durable accounting, escrow, treasury policy, and a versioned integration API for Hangar+ and other TROA plugins. It has no client mod, desktop UI, web UI, WPF, or WinForms dependency.
 
-> Current release: `v1.3.1-alpha`
+> Current release: `v1.3.2-alpha`
 > Runtime: Torch / .NET Framework 4.8 / x64  
 > Interface: Space Engineers chat commands, XML configuration, LCD panels, and server-side plugin API only
 
@@ -11,7 +11,7 @@ Econ+ is a self-contained economic ecosystem. Native Space Engineers ("Keen") ba
 ## Installation
 
 1. Back up the world, `TROA-Econ-Plus.cfg`, and `TROA-Econ-PlusData`.
-2. Install `releases/TROA-Econ-Plus-v1.3.1-alpha.zip` through Torch.
+2. Install `releases/TROA-Econ-Plus-v1.3.2-alpha.zip` through Torch.
 3. Restart Torch so the updated command modules and API are loaded.
 4. Review the generated configuration before enabling payroll, Nexus safeguards, or credit products.
 5. Run `!econadmin status`, `!econadmin escrowtest`, and `!econadmin webhook test` where applicable.
@@ -49,6 +49,36 @@ config (empty = every category), for example `<MarketItemTypes>Ore,Ingot,Compone
 then restart or run `!econadmin marketscan`. To feature specific categories on a **single panel**
 instead, use `Types=` on that LCD (see below) and leave `MarketItemTypes` empty.
 
+> **Note on "ships" and "depots".** Econ+ trades *physical items* (ores, ingots, components, ammo,
+> tools, bottles, consumables) - it does not trade ships/grids, and there is no "ship type" or
+> "station type" to configure. A *station* or *depot* is simply a grid you name with the station
+> tag; you decide what each one sells with `Items=`/`Types=` on its LCD (see the depot presets
+> below). Grid buying/selling stays with Hangar+, which can settle its trades through the Econ+ API.
+
+### Item categories and items
+
+Every category below is discovered automatically (plus anything mods add). A symbol is the item's
+subtype in capitals (Steel Plate -> `STEELPLATE`); where an ore and ingot share a name the ingot
+gets a suffix (`IRON` and `IRON-INGOT`). Ammo and tool subtypes can be long, so use the exact
+symbol from `MarketCatalog.csv`. Use the **Category** value in `Types=` and `MarketItemTypes`.
+
+| Category (`Types=`) | Typical vanilla items |
+|---|---|
+| `Ore` | Iron, Nickel, Cobalt, Magnesium, Silicon, Silver, Gold, Platinum, Uranium, Stone, Ice, Scrap |
+| `Ingot` | Iron, Nickel, Cobalt, Magnesium, Silicon, Silver, Gold, Platinum, Uranium, Gravel (Stone), Scrap |
+| `Component` | Steel Plate, Interior Plate, Construction, Girder, Metal Grid, Small/Large Tube, Motor, Display, Bulletproof Glass, Computer, Reactor, Thruster, Gravity Generator, Medical, Radio-comm, Detector, Explosives, Solar Cell, Power Cell, Superconductor, Canvas, Zone Chip |
+| `AmmoMagazine` | Gatling box, Autocannon magazine, Assault Cannon shell, Artillery shell, Small/Large Railgun sabot, Rocket (missile), pistol & rifle magazines, flares |
+| `PhysicalGunObject` | Grinder, Welder, Hand Drill (tiers I-IV), pistols (S-10/S-10E/S-20A), rifles (MR-series), rocket launchers |
+| `OxygenContainerObject` | Oxygen Bottle |
+| `GasContainerObject` | Hydrogen Bottle |
+| `ConsumableItem` | Medkit, Powerkit, Clang Cola, Cosmic Coffee |
+| `Datapad` / `Package` | Datapad, Package, and event/holiday items |
+
+This is the *typical* vanilla set - exact names vary by game version and mods. The **authoritative,
+per-server list** (every symbol, item, category, and price) is `TROA-Econ-PlusData/MarketCatalog.csv`,
+regenerated on every load and `!econadmin marketscan`. Investment instruments are separate and
+listed in `ExchangeCatalog.csv`.
+
 ### 2. Build a trade station
 
 A trade station is simply a grid whose **name contains the station tag** (`StationNameTag`, default
@@ -68,8 +98,13 @@ A text surface becomes an Econ+ panel in either of two ways:
 - Add the line `[Econ+ Account Display]` to the block's Custom Data.
 
 Then pick what it shows with a `Template=` line in Custom Data. Add `Enabled=false` to Custom Data
-to switch a tagged panel off. Panels refresh every `LcdRefreshSeconds` (default 30) in monospace
-with per-board colours.
+to switch a tagged panel off. Panels refresh every `LcdRefreshSeconds` (default 30).
+
+Econ+ applies its look - a monospace font (so columns line up), the configured `LcdFontSize`
+(default `0.7`), and a per-board colour scheme - **once** per panel and then only rewrites the
+text, so it no longer resets a font or size you set by hand each refresh. Lower `LcdFontSize` to
+fit more rows on large panels, or add `Style=false` to a panel's Custom Data to keep full manual
+control of its font, size, and colours.
 
 **Templates** (`Template=` value):
 
@@ -128,8 +163,17 @@ then Custom Data:
 Template=Bank
 ```
 
-A Station or Exchange panel with **no** `Items=`/`Types=` shows the whole board (capped, with a
-"+N more" line); trading any symbol still works from chat.
+**Depot presets** - one grid, one category each (name each grid `... [ECON+ STATION]` and give its
+LCD one of these):
+
+```
+Template=Station     Template=Station     Template=Station     Template=Station
+Title=Ore Depot      Title=Ingot Bank     Title=Parts Depot    Title=Munitions
+Types=Ore            Types=Ingot          Types=Component      Types=AmmoMagazine
+```
+
+A Station or Exchange panel with **no** `Items=`/`Types=` shows the whole board (capped at 12
+rows, with a "+N more" line); trading any symbol still works from chat.
 
 ### 5. Player shops (peer marketplace)
 

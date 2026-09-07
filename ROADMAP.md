@@ -47,9 +47,9 @@ Every phase is implemented through chat commands, XML configuration, and the ser
 
 ## Current status
 
-- Current build: `v1.3.1-alpha`
+- Current build: `v1.3.2-alpha`
 - Build validation: .NET Framework 4.8 x64 build completed with zero warnings and zero errors.
-- Package: `TROA-Econ-Plus-v1.3.1-alpha.zip`
+- Package: `TROA-Econ-Plus-v1.3.2-alpha.zip`
 - Self-tests: Keen boundary, escrow contract, commodity market, and investment exchange suites all pass.
 - Architecture: Torch server plugin using commands, XML configuration, and the server-side API only; no custom UI or client mod.
 - Implemented scope: Phases 1–9 are implemented in source. Production validation remains required before the alpha designation can be removed.
