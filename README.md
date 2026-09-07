@@ -17,6 +17,133 @@ Econ+ is a self-contained economic ecosystem. Native Space Engineers ("Keen") ba
 5. Run `!econadmin status`, `!econadmin escrowtest`, and `!econadmin webhook test` where applicable.
 6. Validate small transactions on a disposable development server before production use.
 
+## Setup guide
+
+This walkthrough covers building a trade station, wiring LCD panels, choosing which items and
+categories appear, and enabling player shops. Item amounts use your configured currency symbol
+(`CurrencySymbol`, default `cr`).
+
+### 1. The item catalog is automatic
+
+You do not add ores, ingots, components, ammo, tools, or modded items by hand. When the world
+finishes loading, Econ+ scans **every physical item definition on the server (Keen vanilla and
+mods)** and lists it on the commodity market. The Torch console prints a summary like
+`scanned 412 physical items found (388 vanilla, 24 modded); market now lists 412 commodities`, and
+an admin can re-run it any time with `!econadmin marketscan`.
+
+Each item gets a **symbol** derived from its subtype (for example `IRON`, `GOLD`, `SILICON`,
+`STEELPLATE`, `COMPUTER`). Where an ore and an ingot share a name, the second one gets a type
+suffix (for example `IRON` and `IRON-INGOT`). The full list — every symbol, item, and price — is
+written to `TROA-Econ-PlusData/MarketCatalog.csv` (and `ExchangeCatalog.csv` for the exchange) so
+you never have to memorise anything. Players browse it in game with `!econ trade`, `!econ trade
+<page>`, and `!econ trade search <text>`.
+
+**Categories** are the item's type with the `MyObjectBuilder_` prefix removed. Common ones:
+`Ore`, `Ingot`, `Component`, `AmmoMagazine`, `PhysicalGunObject` (tools/weapons),
+`OxygenContainer`, `GasContainer`, `ConsumableItem`, `Datapad`. The exact category for any item is
+the `Type` column in `MarketCatalog.csv` (use the part after the underscore, e.g. `Ore`).
+Category names are case-insensitive wherever you use them.
+
+To limit the **whole market** to certain categories server-wide, set `MarketItemTypes` in the
+config (empty = every category), for example `<MarketItemTypes>Ore,Ingot,Component</MarketItemTypes>`,
+then restart or run `!econadmin marketscan`. To feature specific categories on a **single panel**
+instead, use `Types=` on that LCD (see below) and leave `MarketItemTypes` empty.
+
+### 2. Build a trade station
+
+A trade station is simply a grid whose **name contains the station tag** (`StationNameTag`, default
+`[ECON+ STATION]`).
+
+1. Build or pick a station grid and rename the grid to include the tag, e.g. `Mining Outpost [ECON+ STATION]`.
+2. Players within `StationRadiusMeters` (default 150 m) of that grid can run `!econ trade buy|sell`.
+3. With `EnablePhysicalDelivery=true` (default), buying deposits the real item into the player's
+   inventory and selling removes it; set it `false` to trade virtual positions instead.
+4. To allow trading from anywhere (no station needed), set `RequireStationProximity=false`.
+
+### 3. Add an Econ+ LCD panel
+
+A text surface becomes an Econ+ panel in either of two ways:
+
+- Rename the LCD (or its block) to include the display tag `[ECON+]` (`LcdNameTag`), **or**
+- Add the line `[Econ+ Account Display]` to the block's Custom Data.
+
+Then pick what it shows with a `Template=` line in Custom Data. Add `Enabled=false` to Custom Data
+to switch a tagged panel off. Panels refresh every `LcdRefreshSeconds` (default 30) in monospace
+with per-board colours.
+
+**Templates** (`Template=` value):
+
+| Template | Shows |
+|---|---|
+| `Detailed` | The owner's balance, reputation, loans, and recent activity (default) |
+| `Compact` | Balance, credit score, loan count |
+| `Bank` | Balance, credit score, and all managed named/faction accounts |
+| `Loan` | Credit score, debt, and due dates |
+| `Faction` | Managed faction treasuries |
+| `Market` | Recent Hangar market activity |
+| `Station` | Live commodity trade-station board (global) |
+| `Exchange` | Live share/index ticker (global) |
+
+Account templates (`Detailed`/`Compact`/`Bank`/`Loan`/`Faction`) show the **panel owner's** data.
+`Station` and `Exchange` are global boards and render on any tagged panel regardless of owner.
+
+**Custom Data keys**
+
+- `Template=` — which template to render.
+- `Title=` — a custom heading for a `Station`/`Exchange` panel.
+- `Items=SYM,SYM` — show only these symbols (Station or Exchange).
+- `Types=Ore,Ingot` — show only these categories (Station only).
+- `Enabled=false` — turn this panel off.
+
+### 4. Example panels
+
+An **ingot-only** trade-station board named "Ingot Depot":
+
+```
+Template=Station
+Title=Ingot Depot
+Types=Ingot
+```
+
+A **curated metals** board with specific symbols:
+
+```
+Template=Station
+Title=Metals Market
+Items=IRON,GOLD,SILICON,COBALT,PLATINUM
+```
+
+A **stock ticker** for chosen instruments:
+
+```
+Template=Exchange
+Title=TROA Exchange
+Items=TROA,HANG,SIDX
+```
+
+A player's **personal bank** panel (owner's own accounts) — rename the LCD to include `[ECON+]`,
+then Custom Data:
+
+```
+Template=Bank
+```
+
+A Station or Exchange panel with **no** `Items=`/`Types=` shows the whole board (capped, with a
+"+N more" line); trading any symbol still works from chat.
+
+### 5. Player shops (peer marketplace)
+
+With `EnablePlayerShops=true` (default), players sell their own goods to each other on top of the
+NPC market:
+
+- `!econ shop sell <symbol> <qty> <price>` — reserves the goods (real items are pulled from the
+  seller's inventory when physical delivery is on) and lists them.
+- `!econ shop [page]` — browse listings; `!econ shop buy <id> <qty>` — buy part or all.
+- `!econ shop mine` / `!econ shop cancel <id>` — manage your listings (cancel returns the goods).
+
+Set an optional cut to the treasury with `ShopListingFeePercent`, cap listings with
+`MaxListingsPerPlayer`, and optionally expire them with `ShopListingExpiryDays` (0 = never).
+
 ## Current foundation
 
 - Econ+ balances stored by Steam ID64 in `TROA-Econ-PlusData/Accounts.xml` are authoritative.
