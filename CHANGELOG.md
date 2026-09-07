@@ -1,5 +1,21 @@
 # TROA Econ+ Changelog
 
+## v1.3.1-alpha - Player-to-Player Shops
+
+- Adds a player marketplace: sellers list their own goods for other players to buy, on top of the
+  NPC market. When physical delivery is on, the seller's real items are reserved from inventory at
+  listing time; otherwise a virtual commodity holding is reserved. Peer trades do not move the NPC
+  market price.
+- Purchases can be partial, settle buyer -> seller through the authoritative accounts with an
+  optional treasury fee (credits conserved), and deliver the goods to the buyer. Ordering prevents
+  duplication before loss: quantity is claimed from the listing before the buyer is charged, and a
+  failed delivery refunds the buyer and restores the listing.
+- Commands: `!econ shop [page]`, `!econ shop sell <sym> <qty> <price>`, `!econ shop buy <id> <qty>`,
+  `!econ shop mine`, `!econ shop cancel <id>`. Adds `EconomyShopStore`/`EconomyShopService`,
+  per-seller listing caps, an optional expiry, and configuration.
+- Completes the eight requested player-experience features. Verified: Release build zero
+  warnings/errors; boundary 2/2; escrow 21/21; market 18/18; invest 15/15.
+
 ## v1.3.0-alpha - Player-Experience Release (Custom Currency and HUD)
 
 Rolls up the player-experience expansion (price trends and P&L, alerts and limit orders, market

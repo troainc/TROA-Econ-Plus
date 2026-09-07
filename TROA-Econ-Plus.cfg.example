@@ -132,6 +132,10 @@
   <EnableSavingsInterest>false</EnableSavingsInterest>
   <SavingsInterestPercent>2</SavingsInterestPercent>
   <SavingsInterestIntervalHours>24</SavingsInterestIntervalHours>
+  <EnablePlayerShops>true</EnablePlayerShops>
+  <ShopListingFeePercent>0</ShopListingFeePercent>
+  <MaxListingsPerPlayer>10</MaxListingsPerPlayer>
+  <ShopListingExpiryDays>0</ShopListingExpiryDays>
   <EnableEconomyReports>true</EnableEconomyReports>
   <InactiveAccountDays>30</InactiveAccountDays>
   <EconomySnapshotIntervalHours>6</EconomySnapshotIntervalHours>

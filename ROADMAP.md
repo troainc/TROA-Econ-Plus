@@ -40,14 +40,16 @@ stock exchange are owned by Econ+ and surfaced through chat, the plugin API, and
 - [x] Stage 11 - Market events/news, leaderboards, and market movers (`v1.2.5-alpha`).
 - [x] Stage 12 - Exchange dividends and savings-account interest (`v1.2.6-alpha`).
 - [x] Stage 13 - Custom currency name, HUD notifications, and the `v1.3.0-alpha` release.
+- [x] Stage 14 - Player-to-player marketplace (`!econ shop`): sellers list goods, buyers purchase,
+  credits and goods settle with escrow-style custody (`v1.3.1-alpha`).
 
 Every phase is implemented through chat commands, XML configuration, and the server-side plugin API. Econ+ will not add a custom UI.
 
 ## Current status
 
-- Current build: `v1.3.0-alpha`
+- Current build: `v1.3.1-alpha`
 - Build validation: .NET Framework 4.8 x64 build completed with zero warnings and zero errors.
-- Package: `TROA-Econ-Plus-v1.3.0-alpha.zip`
+- Package: `TROA-Econ-Plus-v1.3.1-alpha.zip`
 - Self-tests: Keen boundary, escrow contract, commodity market, and investment exchange suites all pass.
 - Architecture: Torch server plugin using commands, XML configuration, and the server-side API only; no custom UI or client mod.
 - Implemented scope: Phases 1–9 are implemented in source. Production validation remains required before the alpha designation can be removed.

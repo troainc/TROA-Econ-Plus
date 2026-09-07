@@ -2,7 +2,7 @@
 
 TROA Econ+ is a server-side Torch economy plugin for Space Engineers. It provides durable accounting, escrow, treasury policy, and a versioned integration API for Hangar+ and other TROA plugins. It has no client mod, desktop UI, web UI, WPF, or WinForms dependency.
 
-> Current release: `v1.3.0-alpha`
+> Current release: `v1.3.1-alpha`
 > Runtime: Torch / .NET Framework 4.8 / x64  
 > Interface: Space Engineers chat commands, XML configuration, LCD panels, and server-side plugin API only
 
@@ -11,7 +11,7 @@ Econ+ is a self-contained economic ecosystem. Native Space Engineers ("Keen") ba
 ## Installation
 
 1. Back up the world, `TROA-Econ-Plus.cfg`, and `TROA-Econ-PlusData`.
-2. Install `releases/TROA-Econ-Plus-v1.3.0-alpha.zip` through Torch.
+2. Install `releases/TROA-Econ-Plus-v1.3.1-alpha.zip` through Torch.
 3. Restart Torch so the updated command modules and API are loaded.
 4. Review the generated configuration before enabling payroll, Nexus safeguards, or credit products.
 5. Run `!econadmin status`, `!econadmin escrowtest`, and `!econadmin webhook test` where applicable.
@@ -55,6 +55,7 @@ Econ+ is a self-contained economic ecosystem. Native Space Engineers ("Keen") ba
 - `!econ alert <symbol> gt|lt <price>`, `!econ alerts`, and `!econ alert cancel <id>` set price alerts (a DM when a symbol crosses the price).
 - `!econ order buy|sell <symbol> <qty> <price>`, `!econ orders`, and `!econ order cancel <id>` place standing limit orders that fill automatically. Both auto-route to the commodity market or the exchange by symbol.
 - `!econ top [n]` lists the wealthiest players and `!econ movers` lists the biggest 24h gainers and losers.
+- `!econ shop [page]`, `!econ shop sell <symbol> <qty> <price>`, `!econ shop buy <id> <qty>`, `!econ shop mine`, and `!econ shop cancel <id>` run the player-to-player marketplace.
 - Periodic market events (supply shocks) move prices, broadcast a headline in chat, and scroll on the `Station` and `Exchange` LCDs.
 - Name an owned text surface with `[ECON+]` (configurable) to display the player's live account dashboard.
 
@@ -83,6 +84,10 @@ The catalog is browsable and exportable. `!econ trade` paginates the full list, 
 Prices show a 24h change (a daily reference price that rolls once a day) on `!econ trade`, `!econ trade quote`, and the `Station` LCD. Holdings and the investment portfolio track cost basis, so `!econ trade holdings` and `!econ invest portfolio` show per-line and total unrealised profit and loss.
 
 Players trade with `!econ trade` while near a trade station: a grid named with the configurable `StationNameTag` (default `[ECON+ STATION]`), within `StationRadiusMeters`. `Template=Station` LCD panels show the live board. Physical delivery is on by default (`EnablePhysicalDelivery`): buying deposits the real item into the player's inventory and selling removes it, using only the Space Engineers inventory system and with ordering that prevents duplication before loss. Set it to `false` to trade virtual positions instead. Consumer plugins such as Hangar+ can price and settle trades through `IEconPlusMarketApi` after confirming the `CommodityMarket` capability.
+
+## Player marketplace
+
+Players can sell their own goods to other players on top of the NPC market. `!econ shop sell <symbol> <qty> <price>` reserves the goods (real items are taken from the seller's inventory when physical delivery is on, otherwise a virtual holding) and lists them; `!econ shop` browses listings by page, `!econ shop buy <id> <qty>` buys part or all of a listing, and `!econ shop mine` / `!econ shop cancel <id>` manage your own. Purchases settle from buyer to seller through the authoritative accounts with an optional treasury fee, deliver the goods to the buyer, and never move the NPC market price. Quantity is claimed from the listing before the buyer is charged, and a failed delivery refunds the buyer and restores the listing.
 
 ## Investment exchange
 
@@ -248,6 +253,11 @@ CSV files use `SteamId,Balance,Name`. XML files use an `EconMigrationFile` root 
 !econ order cancel <id>
 !econ top [n]
 !econ movers
+!econ shop [page]
+!econ shop sell <symbol> <qty> <price>
+!econ shop buy <id> <qty>
+!econ shop mine
+!econ shop cancel <id>
 
 !econadmin help
 !econadmin status
