@@ -1,5 +1,27 @@
 # TROA Econ+ Changelog
 
+## v1.8.0-alpha - LCD Overhaul (Pretty + Complete)
+
+- Rebuilt the in-game LCD system around a render-agnostic **view model** (`EconomyLcdView`) with
+  **two renderers**: a pretty **sprite** renderer (`EconomyLcdSprites` — colored header band, KPI
+  tiles, progress/relationship bars, status pills, zebra tables, auto-fit to any panel size) and an
+  upgraded **text** renderer (auto-fit column width instead of the old fixed 27). Players pick per
+  panel with `Render=Sprite|Text` (server default `LcdDefaultRenderMode`, master `LcdUseSprites`);
+  sprite drawing **falls back to text automatically** if a surface rejects it, and `Style=false`
+  still gives full manual control.
+- New panels that surface everything Econ+ now offers: **Dashboard** (balance, credit-score bar,
+  reputation, tax owed + SUSPENDED pill, loans, contracts, insured ships, recent activity — the new
+  default), **Tax** (the jurisdiction the panel physically sits in + your tax owed/next assessment),
+  **Contracts** (open job board), **Route** (a commodity's price cheapest→dearest across
+  territories, `Symbol=`), **Insurance** (your policies), **Bonds** (open series), and **Help**
+  (getting-started commands). Existing Station/Exchange/Government/Bank/Faction/Loan/Compact panels
+  were reworked onto the same look; `Template=Detailed` maps to `Dashboard`.
+- New config: `LcdUseSprites` (default true), `LcdDefaultRenderMode` (default "Sprite");
+  `DefaultLcdTemplate` now defaults to `Dashboard`.
+- Verified: Release build succeeds with 0 warnings / 0 errors against the Torch/SE reference
+  assemblies. The in-game `!econadmin boundarytest` and live panel rendering still need to be
+  checked on a running Torch server (server-side sprite rendering has the built-in text fallback).
+
 ## v1.7.0-alpha - Star-Citizen Economy Loops and Hangar+ v2.1 API
 
 - **Trade routes / location pricing:** a per-government commodity **price modifier** makes goods

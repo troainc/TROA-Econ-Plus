@@ -205,8 +205,15 @@
   <LcdNameTag>[ECON+]</LcdNameTag>
   <LcdRefreshSeconds>30</LcdRefreshSeconds>
   <LcdRecentTransactions>5</LcdRecentTransactions>
-  <DefaultLcdTemplate>Detailed</DefaultLcdTemplate>
+  <!-- Default panel when a surface has no Template= line. Templates: Dashboard, Tax, Contracts,
+       Route, Insurance, Bonds, Station, Exchange, Government, Bank, Faction, Loan, Compact, Help. -->
+  <DefaultLcdTemplate>Dashboard</DefaultLcdTemplate>
   <LcdFontSize>0.7</LcdFontSize>
+  <!-- LcdUseSprites master-enables the pretty graphic renderer. LcdDefaultRenderMode (Sprite or
+       Text) is the default per panel; a panel overrides it with Render=Sprite or Render=Text in its
+       Custom Data. Sprite drawing falls back to text automatically if a surface rejects it. -->
+  <LcdUseSprites>true</LcdUseSprites>
+  <LcdDefaultRenderMode>Sprite</LcdDefaultRenderMode>
   <EnableCommodityMarket>true</EnableCommodityMarket>
   <StationNameTag>[ECON+ STATION]</StationNameTag>
   <StationRadiusMeters>150</StationRadiusMeters>

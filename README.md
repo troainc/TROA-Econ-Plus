@@ -130,15 +130,26 @@ Econ+ does not depend on Keen banking to preserve balances. Account records use 
 - Fraud monitoring flags repeated failures, rapid transaction velocity, high credit volume, unusually large transfers, authoritative balance jumps, and multi-recipient funnel patterns.
 - Findings remain audit signals; Econ+ does not automatically ban players.
 
-## LCD templates
+## LCD panels
 
-Name an owned text surface with the configured `[ECON+]` tag. Add one of these lines to Custom Data:
+Name an owned text surface (or any surface-provider block) with the configured `[ECON+]` tag, then add a `Template=` line to its Custom Data. Panels render as **drawn graphics** (colored header, KPI tiles, bars, status pills, tables) by default and fall back to clean auto-fit **text** automatically — pick per panel with `Render=Sprite` or `Render=Text`. `Style=false` keeps full manual control (plain text, no styling). Server defaults are `LcdUseSprites` and `LcdDefaultRenderMode`.
 
-- `Template=Compact` for balance, score, and loan count.
-- `Template=Detailed` for the complete account and recent activity.
-- `Template=Loan` for score, debt, and due dates.
-- `Template=Faction` for managed faction treasuries.
-- `Template=Market` for recent Hangar market activity.
+Player panels (use the panel owner's account):
+
+- `Template=Dashboard` — balance, credit score bar, reputation, tax owed + a **SUSPENDED** pill, loans, active contracts, insured ships, recent activity, and quick commands. (Default.)
+- `Template=Tax` — the government whose territory the panel physically sits in, its fees/tariff/royalty, **your** tax owed, next assessment, and suspension status.
+- `Template=Insurance` — your ship-insurance policies and premiums.
+- `Template=Bank` / `Faction` / `Loan` / `Compact` — managed accounts, faction treasuries, loans, or a compact summary.
+
+Shared/world panels (no owner needed):
+
+- `Template=Station` — the commodity board; curate with `Items=IRON,GOLD` and/or `Types=Ore,Ingot`, rename with `Title=`.
+- `Template=Exchange` — the investment ticker.
+- `Template=Route` — a commodity's price across territories, cheapest→dearest; set `Symbol=IRON`.
+- `Template=Contracts` — the open mission/contract board.
+- `Template=Bonds` — government bonds open for purchase.
+- `Template=Government` — every government's treasury (public budget board).
+- `Template=Help` — a getting-started command list.
 
 ## Discord and plugin API
 
