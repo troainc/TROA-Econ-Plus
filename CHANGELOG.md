@@ -1,5 +1,109 @@
 # TROA Econ+ Changelog
 
+## v1.6.0-alpha - Governing Body and Territorial Economy
+
+- Adds a **federated governing body**. The server owner's faction is the overarching **United
+  Faction** (a `Federal` government); any faction can be chartered as its own `Regional`/`Local`
+  government over territory. New `EconomyGovernanceStore` (`EconPlusGovernance.xml`) and
+  `EconomyGovernanceService`. Off by default; every credit movement stays in the authoritative
+  accounting layer and jurisdiction is a world-state read only (no native Keen banking).
+- **Territories (space and planets):** a government owns **zones** around named grids (radius +
+  optional `planetary` flag), reusing the trade-station proximity primitive. A player's live
+  position resolves to the nearest owning zone, else the federal government.
+- **Territorial revenue** routed to the jurisdiction's treasury with an optional `FederalCutPercent`
+  to the United treasury: **docking fees** (once per cooldown), **trade tariffs** on market/shop
+  buys, **extraction royalties** on sells, and periodic **territory tax** on active residents.
+- **Spending:** **citizen stipend / UBI** pays active residents from a government treasury each
+  cycle; **government bonds** (`!econadmin gov bond issue`, `!econ bond buy`) pay coupons and
+  principal automatically from the issuing treasury.
+- **Governance & politics:** player self-charter (`!econ charter`, optional fee to the United
+  treasury), **elections** (`!econadmin gov election open`/`close`, `!econ vote`), a `Government`
+  LCD template (public budget board), and `!econ gov` for the current jurisdiction.
+- **Central bank:** a federal loan-APR override (`!econadmin gov apr`, gated by
+  `EnableCentralBankAprOverride`) sets loan interest economy-wide via `EconomyCreditService`.
+- **Enforcement:** the unpaid-tax suspension now also blocks **market and shop buys** (in addition
+  to transfers and loan applications).
+- **Turnkey adoption:** `!econadmin gov preset <tag>` charters a faction as the federal United
+  government and enables territories/fees/tariffs/royalties in one step. (Cross-server Nexus
+  federation remains future work; Nexus transport is still disabled/stubbed.)
+- New config block (all defaults off/zero, backward compatible): `EnableTerritories`,
+  `EnableDockingFees`, `DockingFeeCooldownSeconds`, `EnableTerritoryTariffs`,
+  `EnableExtractionRoyalty`, `FederalCutPercent`, `MaxDockingFeeCredits`, `MaxTerritoryTariffPercent`,
+  `MaxTerritoryRoyaltyPercent`, `MaxTerritoryTaxPerCycleCredits`, `MaxTerritoryZonesPerGovernment`,
+  `MaxGovernments`, `TerritoryTaxIntervalMinutes`, `GovernancePollSeconds`, `EnableCitizenStipend`,
+  `StipendIntervalMinutes`, `MaxStipendPerCitizenCredits`, `MaxStipendRecipientsPerCycle`,
+  `EnableGovernmentCharters`, `GovernmentCharterFeeCredits`, `EnableElections`,
+  `ElectionDefaultDurationMinutes`, `EnableGovernmentBonds`, `BondCouponIntervalMinutes`,
+  `MaxBondFaceValueCredits`, `MaxBondCouponPercent`, `EnableCentralBankAprOverride`.
+- Verified: Release build succeeds with 0 warnings / 0 errors against the Torch/SE reference
+  assemblies. The in-game `!econadmin boundarytest` and live self-tests still need to be run on a
+  running Torch server.
+
+## v1.5.0-alpha - Government Taxation
+
+- Adds **government taxation**: a server designates one faction as the government
+  (`GovernmentFactionTag`) with an Econ+ faction treasury, and every `GovernmentTaxIntervalMinutes`
+  (default ~30 days) each eligible player is assessed a flat `GovernmentTaxPerPlayerCredits` into
+  that treasury. Collection runs through the new authoritative
+  `EconomyExpansionService.TryCollectToNamedAccount` path (player debit -> treasury credit, atomic,
+  restart-recoverable, refund-on-failure) and never calls native Keen banking. Off by default.
+- **The taxman:** unpaid tax accrues as arrears; after `GovernmentTaxGracePeriodMinutes` a
+  `GovernmentTaxLateFeePercent` late fee is added per cycle and Econ+ keeps auto-collecting up to
+  `GovernmentTaxMaxCollectedPerCycleCredits` per cycle (never negative), with an in-game reminder
+  each cycle. At `GovernmentTaxExtremeDebtCredits` the player's economy privileges are suspended
+  (transfers and loan applications blocked until paid) and they are flagged for staff. Assets are
+  never seized (Hangar+ owns grids); enforcement is purely economic.
+- New per-player state store (`EconomyGovernmentStore` / `EconPlusGovernment.xml`) tracks arrears,
+  lifetime assessed/paid, missed cycles, suspension, and the assessment schedule; enabling the tax
+  seeds the schedule without an immediate surprise assessment.
+- Commands: `!econ tax`, `!econ tax pay [amount]`; `!econadmin tax`, `!econadmin tax run`,
+  `!econadmin tax status <steam-id>`, `!econadmin tax forgive <steam-id> CONFIRM`.
+- New config: `EnableGovernmentTax`, `GovernmentFactionTag`, `GovernmentTaxPerPlayerCredits`,
+  `GovernmentTaxIntervalMinutes`, `GovernmentTaxGracePeriodMinutes`, `GovernmentTaxLateFeePercent`,
+  `GovernmentTaxMaxCollectedPerCycleCredits`, `GovernmentTaxExtremeDebtCredits`,
+  `GovernmentTaxSuspendPrivilegesOnExtremeDebt`, `GovernmentTaxFlagAdminsOnExtremeDebt`,
+  `GovernmentTaxExemptSteamIds`, `GovernmentTaxPollSeconds` (all with backward-compatible defaults).
+- The Keen boundary is preserved (the new government service references no native banking type).
+  Verified: Release build succeeds with 0 warnings / 0 errors against the Torch/SE reference
+  assemblies. The in-game `!econadmin boundarytest` and live self-tests still need to be run on a
+  running Torch server.
+
+## v1.4.0-alpha - Faction Payroll
+
+- Adds leader-run **faction payroll**: an authorized faction founder or leader pays every eligible
+  faction member a flat amount from the faction's Econ+ treasury with `!econ payroll
+  <credits-per-member> ["purpose"]`, and can dry-run it first with `!econ payroll preview
+  <credits-per-member>`. Authorization is verified on the server against live Space Engineers
+  faction state (founder, or leader-ranked officer unless `FactionPayrollFoundersOnly`); a
+  client/command-UI check is never trusted.
+- Money comes only from the faction's admin-created `Faction` treasury (tag-matched) and moves
+  entirely through the authoritative Econ+ accounting layer (`EconomyExpansionService` ->
+  `EconomyExpansionStore`/`EconomyBalanceService`); payroll never calls native Keen banking and
+  never creates credits. Recipients are the faction's current members with a resolvable Steam ID64
+  (offline included); the initiator is paid as a member by default (`FactionPayrollIncludesInitiator`).
+- Insufficient funds abort the whole run before any credits move (validated against treasury balance
+  and daily spending limit), reporting required vs available. Per-member amount must be positive and
+  within `MaximumFactionPayrollCreditsPerMember`; member count is bounded by
+  `MaximumFactionPayrollRecipients`; totals use checked arithmetic; a per-initiator cooldown
+  (`FactionPayrollCooldownSeconds`) guards against duplicate runs; concurrent payroll against one
+  treasury is serialized.
+- Centralizes named/faction-account payouts into a single atomic, restart-recoverable
+  `TryDisburseFromNamedAccount` path (debit account -> credit member, with the account durably
+  restored if a member credit fails, `RecoveryRequired` retained on any unconfirmed reversal).
+  `TryPayNamedAccount` now uses this path, gaining refund-on-failure recovery.
+- Anti-fraud auditing: every run is stored as a durable `EconomyPayrollRecord` (initiator Steam ID64,
+  faction, treasury, per-member amount, recipient/paid counts, totals), each member payment is a
+  ledger transaction tagged with the initiator Steam ID, and admins review runs with
+  `!econadmin payrolls [count]`.
+- New config: `EnableFactionPayroll`, `FactionPayrollFoundersOnly`, `FactionPayrollIncludesInitiator`,
+  `FactionPayrollCooldownSeconds`, `MaximumFactionPayrollRecipients`,
+  `MaximumFactionPayrollCreditsPerMember` (all with backward-compatible defaults). This is separate
+  from the admin-scheduled `EnablePayroll` program engine, which is unchanged.
+- The Keen boundary is preserved: the new `EconomyFactionService` only reads faction/world state and
+  references no money type. Verified: Release build succeeds with 0 warnings / 0 errors against the
+  Torch/SE reference assemblies. The in-game `!econadmin boundarytest` and live self-tests still need
+  to be run on a running Torch server.
+
 ## v1.3.2-alpha - LCD Styling Fix and Setup Documentation
 
 - LCD panels are now styled once (monospace font, `LcdFontSize`, colours) instead of on every

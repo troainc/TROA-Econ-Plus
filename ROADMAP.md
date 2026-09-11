@@ -94,6 +94,9 @@ Every phase is implemented through chat commands, XML configuration, and the ser
 - [x] One-time and repeating scheduled programs.
 - [x] Automatic game-thread execution with bounded work per pass.
 - [x] Durable per-run idempotency references and recovery-required pausing.
+- [x] Leader-run faction payroll: a founder/leader pays eligible faction members a flat amount from the faction treasury, with server-side authorization, up-front funds validation, atomic per-member disbursement, and initiator-Steam-ID audit records.
+- [x] Government taxation: a designated government faction collects a recurring flat per-player tax into its treasury, with arrears, grace period, late fees, per-cycle collection cap, in-game reminders, and economy-privilege suspension plus staff flagging at extreme debt.
+- [x] Governing body and territories: a federated government model (United Faction + player-chartered regional/local governments) with world-position jurisdiction zones (space and planets), docking fees, trade tariffs, extraction royalties, and periodic territory tax; citizen stipend/UBI; government bonds and a central-bank loan-APR override; elections and a Government LCD budget board; and a turnkey preset.
 
 ### Phase 6 — Risk controls (implemented)
 
@@ -133,6 +136,9 @@ Every phase is implemented through chat commands, XML configuration, and the ser
 - [ ] Restart the server at each transaction checkpoint and verify conservative recovery classification.
 - [ ] Validate Hangar+ duplicate hold, capture, release, and restart retries against the packaged plugin.
 - [ ] Validate scheduled payroll and loan processing across restarts and configuration reloads.
+- [ ] Validate faction payroll on a live server: founder/leader authorization, non-leader rejection, insufficient-funds abort, offline-member payment, mid-run failure handling, duplicate-run cooldown, and initiator-Steam-ID audit records; confirm `!econadmin boundarytest` still passes.
+- [ ] Validate government taxation on a live server: cycle assessment/collection into the government treasury, arrears + grace + late fees, per-cycle collection cap, reminders, extreme-debt suspension of transfers/loans and its lifting on payment, `!econadmin tax`/`tax run`/`tax forgive`, and restart persistence; confirm `!econadmin boundarytest` still passes.
+- [ ] Validate the governing body on a live server: `!econadmin gov preset`, charter/zone/policy commands, jurisdiction resolution in orbit and on a planet, docking-fee/tariff/royalty collection into the right treasury with the federal cut, territory tax + citizen stipend cycles, government bonds (buy/coupon/maturity), central-bank APR override, elections, market/shop suspension gating, the Government LCD board, and restart persistence; confirm `!econadmin boundarytest` still passes.
 - [ ] Load-test velocity limits, analytics, exports, and ledger growth with production-sized data.
 - [ ] Validate Nexus only after an authenticated transport adapter is selected and reviewed.
 - [ ] Promote from alpha only after backup, rollback, and recovery procedures are documented and tested by server staff.

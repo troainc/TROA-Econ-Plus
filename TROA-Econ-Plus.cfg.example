@@ -16,6 +16,87 @@
   <EnableFactionAccounts>true</EnableFactionAccounts>
   <FactionApprovalThresholdCredits>1000000</FactionApprovalThresholdCredits>
   <FactionDailySpendingLimitCredits>10000000</FactionDailySpendingLimitCredits>
+  <!-- Faction payroll: an authorized faction founder/leader pays every eligible faction member a
+       flat amount from the faction's Econ+ treasury (an admin-created Faction account whose tag
+       matches the faction). Money moves only through the authoritative Econ+ accounting layer, and
+       every run is recorded with the initiator's Steam ID for fraud review (!econadmin payrolls). -->
+  <EnableFactionPayroll>true</EnableFactionPayroll>
+  <!-- true = only the founder may run payroll; false = founder OR any leader-ranked officer. -->
+  <FactionPayrollFoundersOnly>false</FactionPayrollFoundersOnly>
+  <!-- true = the initiating founder/leader is paid as a normal member; false = they are skipped. -->
+  <FactionPayrollIncludesInitiator>true</FactionPayrollIncludesInitiator>
+  <!-- Per-initiator cooldown guarding against an accidental duplicate payroll run. -->
+  <FactionPayrollCooldownSeconds>30</FactionPayrollCooldownSeconds>
+  <!-- Safety bound on how many members a single payroll run may pay. -->
+  <MaximumFactionPayrollRecipients>500</MaximumFactionPayrollRecipients>
+  <!-- Upper bound on the flat per-member amount a payroll run may specify. -->
+  <MaximumFactionPayrollCreditsPerMember>100000000</MaximumFactionPayrollCreditsPerMember>
+  <!-- Government taxation: a designated "government" faction (GovernmentFactionTag) owns a Faction
+       treasury that collects a recurring flat per-player tax. Unpaid amounts become arrears with a
+       grace period and late fee; Econ+ keeps collecting up to a per-cycle cap (the "taxman") and,
+       at extreme debt, can suspend a player's economy privileges and flag them for staff. All money
+       moves through the authoritative Econ+ accounting layer, never native Keen banking. Off by
+       default: set the tag, create its Faction treasury, then set EnableGovernmentTax=true. -->
+  <EnableGovernmentTax>false</EnableGovernmentTax>
+  <!-- The faction tag that IS the government. An admin must create its treasury:
+       !econadmin factionaccount create <tag> "name". -->
+  <GovernmentFactionTag></GovernmentFactionTag>
+  <GovernmentTaxPerPlayerCredits>1000</GovernmentTaxPerPlayerCredits>
+  <!-- Assessment interval in minutes. 43200 ~= 30 days of real server uptime ("monthly"). -->
+  <GovernmentTaxIntervalMinutes>43200</GovernmentTaxIntervalMinutes>
+  <!-- Grace period after a debt first appears before late fees begin (minutes). -->
+  <GovernmentTaxGracePeriodMinutes>4320</GovernmentTaxGracePeriodMinutes>
+  <GovernmentTaxLateFeePercent>5</GovernmentTaxLateFeePercent>
+  <!-- Maximum credits the taxman auto-collects from one player per cycle toward arrears. -->
+  <GovernmentTaxMaxCollectedPerCycleCredits>5000</GovernmentTaxMaxCollectedPerCycleCredits>
+  <!-- Arrears at or above this are "extreme" and can trigger suspension / admin flagging. -->
+  <GovernmentTaxExtremeDebtCredits>50000</GovernmentTaxExtremeDebtCredits>
+  <GovernmentTaxSuspendPrivilegesOnExtremeDebt>true</GovernmentTaxSuspendPrivilegesOnExtremeDebt>
+  <GovernmentTaxFlagAdminsOnExtremeDebt>true</GovernmentTaxFlagAdminsOnExtremeDebt>
+  <!-- Steam ID64s never taxed (comma/space separated). The government treasury owner and its
+       managers are always exempt automatically. -->
+  <GovernmentTaxExemptSteamIds></GovernmentTaxExemptSteamIds>
+  <GovernmentTaxPollSeconds>300</GovernmentTaxPollSeconds>
+  <!-- ============================ Governing body / territories ============================
+       A federated government model. The server owner's faction is the "United Faction" (a Federal
+       government); any faction can be chartered as its own Regional/Local government over territory.
+       Territory = zones around named grids (space or planet). Governments earn docking fees, trade
+       tariffs, extraction royalties, and periodic territory tax (routed to their Faction treasury,
+       with an optional federal cut), and spend on citizen stipends, bonds, and grants. All money
+       moves through the authoritative Econ+ accounting layer; location is a world read only.
+       Quickest setup: create a Faction treasury for your tag, then run !econadmin gov preset <tag>.
+       Off by default. -->
+  <EnableTerritories>false</EnableTerritories>
+  <EnableDockingFees>false</EnableDockingFees>
+  <DockingFeeCooldownSeconds>600</DockingFeeCooldownSeconds>
+  <EnableTerritoryTariffs>false</EnableTerritoryTariffs>
+  <EnableExtractionRoyalty>false</EnableExtractionRoyalty>
+  <!-- Percent of regional/local territorial revenue that goes to the federal United treasury. -->
+  <FederalCutPercent>0</FederalCutPercent>
+  <MaxDockingFeeCredits>100000</MaxDockingFeeCredits>
+  <MaxTerritoryTariffPercent>25</MaxTerritoryTariffPercent>
+  <MaxTerritoryRoyaltyPercent>25</MaxTerritoryRoyaltyPercent>
+  <MaxTerritoryTaxPerCycleCredits>1000000</MaxTerritoryTaxPerCycleCredits>
+  <MaxTerritoryZonesPerGovernment>20</MaxTerritoryZonesPerGovernment>
+  <MaxGovernments>50</MaxGovernments>
+  <TerritoryTaxIntervalMinutes>43200</TerritoryTaxIntervalMinutes>
+  <GovernancePollSeconds>300</GovernancePollSeconds>
+  <!-- Citizen stipend / UBI: governments with a stipend policy pay active residents each cycle. -->
+  <EnableCitizenStipend>false</EnableCitizenStipend>
+  <StipendIntervalMinutes>43200</StipendIntervalMinutes>
+  <MaxStipendPerCitizenCredits>1000000</MaxStipendPerCitizenCredits>
+  <MaxStipendRecipientsPerCycle>1000</MaxStipendRecipientsPerCycle>
+  <!-- Player-chartered governments and elections. -->
+  <EnableGovernmentCharters>false</EnableGovernmentCharters>
+  <GovernmentCharterFeeCredits>1000000</GovernmentCharterFeeCredits>
+  <EnableElections>false</EnableElections>
+  <ElectionDefaultDurationMinutes>1440</ElectionDefaultDurationMinutes>
+  <!-- Sovereign finance: government bonds and a federal central-bank loan-APR override. -->
+  <EnableGovernmentBonds>false</EnableGovernmentBonds>
+  <BondCouponIntervalMinutes>10080</BondCouponIntervalMinutes>
+  <MaxBondFaceValueCredits>1000000</MaxBondFaceValueCredits>
+  <MaxBondCouponPercent>25</MaxBondCouponPercent>
+  <EnableCentralBankAprOverride>false</EnableCentralBankAprOverride>
   <EnableMaintenanceMode>true</EnableMaintenanceMode>
   <EnableKeenReconciliation>true</EnableKeenReconciliation>
   <EnableAccountRecovery>true</EnableAccountRecovery>

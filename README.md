@@ -2,191 +2,18 @@
 
 TROA Econ+ is a server-side Torch economy plugin for Space Engineers. It provides durable accounting, escrow, treasury policy, and a versioned integration API for Hangar+ and other TROA plugins. It has no client mod, desktop UI, web UI, WPF, or WinForms dependency.
 
-> Current release: `v1.3.2-alpha`
+> Current release: `v0.9.5-alpha`
 > Runtime: Torch / .NET Framework 4.8 / x64  
-> Interface: Space Engineers chat commands, XML configuration, LCD panels, and server-side plugin API only
-
-Econ+ is a self-contained economic ecosystem. Native Space Engineers ("Keen") banking is used only to add/remove credits (an optional balance mirror) and to show in-game messages; accounts, banks, treasuries, a dynamic commodity market, and an investment exchange are all owned by Econ+. The currency name and symbol are configurable (`CurrencyName`/`CurrencySymbol`), and asynchronous notices (payments, trade fills, dividends, alerts) can pop as corner HUD notifications as well as chat (`EnableHudNotifications`). The `!econadmin boundarytest` command verifies, by scanning the compiled plugin, that no code path outside the balance mirror touches native Keen banking.
+> Interface: Space Engineers chat commands, XML configuration, and server-side plugin API only
 
 ## Installation
 
 1. Back up the world, `TROA-Econ-Plus.cfg`, and `TROA-Econ-PlusData`.
-2. Install `releases/TROA-Econ-Plus-v1.3.2-alpha.zip` through Torch.
+2. Install `releases/TROA-Econ-Plus-v0.9.5-alpha.zip` through Torch.
 3. Restart Torch so the updated command modules and API are loaded.
 4. Review the generated configuration before enabling payroll, Nexus safeguards, or credit products.
 5. Run `!econadmin status`, `!econadmin escrowtest`, and `!econadmin webhook test` where applicable.
 6. Validate small transactions on a disposable development server before production use.
-
-## Setup guide
-
-This walkthrough covers building a trade station, wiring LCD panels, choosing which items and
-categories appear, and enabling player shops. Item amounts use your configured currency symbol
-(`CurrencySymbol`, default `cr`).
-
-### 1. The item catalog is automatic
-
-You do not add ores, ingots, components, ammo, tools, or modded items by hand. When the world
-finishes loading, Econ+ scans **every physical item definition on the server (Keen vanilla and
-mods)** and lists it on the commodity market. The Torch console prints a summary like
-`scanned 412 physical items found (388 vanilla, 24 modded); market now lists 412 commodities`, and
-an admin can re-run it any time with `!econadmin marketscan`.
-
-Each item gets a **symbol** derived from its subtype (for example `IRON`, `GOLD`, `SILICON`,
-`STEELPLATE`, `COMPUTER`). Where an ore and an ingot share a name, the second one gets a type
-suffix (for example `IRON` and `IRON-INGOT`). The full list — every symbol, item, and price — is
-written to `TROA-Econ-PlusData/MarketCatalog.csv` (and `ExchangeCatalog.csv` for the exchange) so
-you never have to memorise anything. Players browse it in game with `!econ trade`, `!econ trade
-<page>`, and `!econ trade search <text>`.
-
-**Categories** are the item's type with the `MyObjectBuilder_` prefix removed. Common ones:
-`Ore`, `Ingot`, `Component`, `AmmoMagazine`, `PhysicalGunObject` (tools/weapons),
-`OxygenContainer`, `GasContainer`, `ConsumableItem`, `Datapad`. The exact category for any item is
-the `Type` column in `MarketCatalog.csv` (use the part after the underscore, e.g. `Ore`).
-Category names are case-insensitive wherever you use them.
-
-To limit the **whole market** to certain categories server-wide, set `MarketItemTypes` in the
-config (empty = every category), for example `<MarketItemTypes>Ore,Ingot,Component</MarketItemTypes>`,
-then restart or run `!econadmin marketscan`. To feature specific categories on a **single panel**
-instead, use `Types=` on that LCD (see below) and leave `MarketItemTypes` empty.
-
-> **Note on "ships" and "depots".** Econ+ trades *physical items* (ores, ingots, components, ammo,
-> tools, bottles, consumables) - it does not trade ships/grids, and there is no "ship type" or
-> "station type" to configure. A *station* or *depot* is simply a grid you name with the station
-> tag; you decide what each one sells with `Items=`/`Types=` on its LCD (see the depot presets
-> below). Grid buying/selling stays with Hangar+, which can settle its trades through the Econ+ API.
-
-### Item categories and items
-
-Every category below is discovered automatically (plus anything mods add). A symbol is the item's
-subtype in capitals (Steel Plate -> `STEELPLATE`); where an ore and ingot share a name the ingot
-gets a suffix (`IRON` and `IRON-INGOT`). Ammo and tool subtypes can be long, so use the exact
-symbol from `MarketCatalog.csv`. Use the **Category** value in `Types=` and `MarketItemTypes`.
-
-| Category (`Types=`) | Typical vanilla items |
-|---|---|
-| `Ore` | Iron, Nickel, Cobalt, Magnesium, Silicon, Silver, Gold, Platinum, Uranium, Stone, Ice, Scrap |
-| `Ingot` | Iron, Nickel, Cobalt, Magnesium, Silicon, Silver, Gold, Platinum, Uranium, Gravel (Stone), Scrap |
-| `Component` | Steel Plate, Interior Plate, Construction, Girder, Metal Grid, Small/Large Tube, Motor, Display, Bulletproof Glass, Computer, Reactor, Thruster, Gravity Generator, Medical, Radio-comm, Detector, Explosives, Solar Cell, Power Cell, Superconductor, Canvas, Zone Chip |
-| `AmmoMagazine` | Gatling box, Autocannon magazine, Assault Cannon shell, Artillery shell, Small/Large Railgun sabot, Rocket (missile), pistol & rifle magazines, flares |
-| `PhysicalGunObject` | Grinder, Welder, Hand Drill (tiers I-IV), pistols (S-10/S-10E/S-20A), rifles (MR-series), rocket launchers |
-| `OxygenContainerObject` | Oxygen Bottle |
-| `GasContainerObject` | Hydrogen Bottle |
-| `ConsumableItem` | Medkit, Powerkit, Clang Cola, Cosmic Coffee |
-| `Datapad` / `Package` | Datapad, Package, and event/holiday items |
-
-This is the *typical* vanilla set - exact names vary by game version and mods. The **authoritative,
-per-server list** (every symbol, item, category, and price) is `TROA-Econ-PlusData/MarketCatalog.csv`,
-regenerated on every load and `!econadmin marketscan`. Investment instruments are separate and
-listed in `ExchangeCatalog.csv`.
-
-### 2. Build a trade station
-
-A trade station is simply a grid whose **name contains the station tag** (`StationNameTag`, default
-`[ECON+ STATION]`).
-
-1. Build or pick a station grid and rename the grid to include the tag, e.g. `Mining Outpost [ECON+ STATION]`.
-2. Players within `StationRadiusMeters` (default 150 m) of that grid can run `!econ trade buy|sell`.
-3. With `EnablePhysicalDelivery=true` (default), buying deposits the real item into the player's
-   inventory and selling removes it; set it `false` to trade virtual positions instead.
-4. To allow trading from anywhere (no station needed), set `RequireStationProximity=false`.
-
-### 3. Add an Econ+ LCD panel
-
-A text surface becomes an Econ+ panel in either of two ways:
-
-- Rename the LCD (or its block) to include the display tag `[ECON+]` (`LcdNameTag`), **or**
-- Add the line `[Econ+ Account Display]` to the block's Custom Data.
-
-Then pick what it shows with a `Template=` line in Custom Data. Add `Enabled=false` to Custom Data
-to switch a tagged panel off. Panels refresh every `LcdRefreshSeconds` (default 30).
-
-Econ+ applies its look - a monospace font (so columns line up), the configured `LcdFontSize`
-(default `0.7`), and a per-board colour scheme - **once** per panel and then only rewrites the
-text, so it no longer resets a font or size you set by hand each refresh. Lower `LcdFontSize` to
-fit more rows on large panels, or add `Style=false` to a panel's Custom Data to keep full manual
-control of its font, size, and colours.
-
-**Templates** (`Template=` value):
-
-| Template | Shows |
-|---|---|
-| `Detailed` | The owner's balance, reputation, loans, and recent activity (default) |
-| `Compact` | Balance, credit score, loan count |
-| `Bank` | Balance, credit score, and all managed named/faction accounts |
-| `Loan` | Credit score, debt, and due dates |
-| `Faction` | Managed faction treasuries |
-| `Market` | Recent Hangar market activity |
-| `Station` | Live commodity trade-station board (global) |
-| `Exchange` | Live share/index ticker (global) |
-
-Account templates (`Detailed`/`Compact`/`Bank`/`Loan`/`Faction`) show the **panel owner's** data.
-`Station` and `Exchange` are global boards and render on any tagged panel regardless of owner.
-
-**Custom Data keys**
-
-- `Template=` — which template to render.
-- `Title=` — a custom heading for a `Station`/`Exchange` panel.
-- `Items=SYM,SYM` — show only these symbols (Station or Exchange).
-- `Types=Ore,Ingot` — show only these categories (Station only).
-- `Enabled=false` — turn this panel off.
-
-### 4. Example panels
-
-An **ingot-only** trade-station board named "Ingot Depot":
-
-```
-Template=Station
-Title=Ingot Depot
-Types=Ingot
-```
-
-A **curated metals** board with specific symbols:
-
-```
-Template=Station
-Title=Metals Market
-Items=IRON,GOLD,SILICON,COBALT,PLATINUM
-```
-
-A **stock ticker** for chosen instruments:
-
-```
-Template=Exchange
-Title=TROA Exchange
-Items=TROA,HANG,SIDX
-```
-
-A player's **personal bank** panel (owner's own accounts) — rename the LCD to include `[ECON+]`,
-then Custom Data:
-
-```
-Template=Bank
-```
-
-**Depot presets** - one grid, one category each (name each grid `... [ECON+ STATION]` and give its
-LCD one of these):
-
-```
-Template=Station     Template=Station     Template=Station     Template=Station
-Title=Ore Depot      Title=Ingot Bank     Title=Parts Depot    Title=Munitions
-Types=Ore            Types=Ingot          Types=Component      Types=AmmoMagazine
-```
-
-A Station or Exchange panel with **no** `Items=`/`Types=` shows the whole board (capped at 12
-rows, with a "+N more" line); trading any symbol still works from chat.
-
-### 5. Player shops (peer marketplace)
-
-With `EnablePlayerShops=true` (default), players sell their own goods to each other on top of the
-NPC market:
-
-- `!econ shop sell <symbol> <qty> <price>` — reserves the goods (real items are pulled from the
-  seller's inventory when physical delivery is on) and lists them.
-- `!econ shop [page]` — browse listings; `!econ shop buy <id> <qty>` — buy part or all.
-- `!econ shop mine` / `!econ shop cancel <id>` — manage your listings (cancel returns the goods).
-
-Set an optional cut to the treasury with `ShopListingFeePercent`, cap listings with
-`MaxListingsPerPlayer`, and optionally expire them with `ShopListingExpiryDays` (0 = never).
 
 ## Current foundation
 
@@ -220,19 +47,48 @@ Set an optional cut to the treasury with `ShopListingFeePercent`, cap listings w
 - `!econ history <count>` and `!econ statement <count>` show durable activity.
 - `!econ risk` shows the player's current configured limits and recent usage.
 - `!econ loans`, `!econ loanapply <credits> <days> "purpose"`, and `!econ loanrepay <loan-id> <credits>` provide player credit tools.
-- `!econ trade` shows one page of the commodity market; `!econ trade <page>` flips pages and `!econ trade search <text>` finds items by symbol or name.
-- `!econ trade quote|buy|sell <symbol> <qty>` and `!econ trade holdings` trade the dynamic commodity market (buy/sell near a trade station).
-- `!econ invest`, `!econ invest quote|buy|sell <symbol> <qty>`, and `!econ invest portfolio` use the investment exchange.
-- `!econ alert <symbol> gt|lt <price>`, `!econ alerts`, and `!econ alert cancel <id>` set price alerts (a DM when a symbol crosses the price).
-- `!econ order buy|sell <symbol> <qty> <price>`, `!econ orders`, and `!econ order cancel <id>` place standing limit orders that fill automatically. Both auto-route to the commodity market or the exchange by symbol.
-- `!econ top [n]` lists the wealthiest players and `!econ movers` lists the biggest 24h gainers and losers.
-- `!econ shop [page]`, `!econ shop sell <symbol> <qty> <price>`, `!econ shop buy <id> <qty>`, `!econ shop mine`, and `!econ shop cancel <id>` run the player-to-player marketplace.
-- Periodic market events (supply shocks) move prices, broadcast a headline in chat, and scroll on the `Station` and `Exchange` LCDs.
+- `!econ payroll <credits-per-member> ["purpose"]` lets an authorized faction founder or leader pay every eligible faction member a flat amount from the faction treasury; `!econ payroll preview <credits-per-member>` shows the recipients and total cost first without paying anyone. See [Faction payroll](#faction-payroll).
 - Name an owned text surface with `[ECON+]` (configurable) to display the player's live account dashboard.
+
+## Faction payroll
+
+Faction payroll lets an authorized faction leader pay the whole faction from the faction's own Econ+ treasury, using the same authoritative accounting layer as every other Econ+ money movement — it never calls native Keen banking and never creates credits.
+
+- **Who can run it:** a founder or a leader-ranked officer of the faction (live Space Engineers faction state, verified on the server). Set `FactionPayrollFoundersOnly` to `true` to restrict it to founders only. A client-side or command-UI check is never trusted.
+- **Where the money comes from:** the faction's Econ+ treasury — a `Faction` named account whose tag matches the faction, created by an administrator with `!econadmin factionaccount create <tag> "name"`. Payroll never creates a treasury; if none exists the command explains how an admin can add one.
+- **Who gets paid:** every current faction member whose identity resolves to a Steam ID64 (offline members included, since the account model supports offline balances). Members without a resolvable identity are skipped so payroll never targets a deleted or unknown player. The initiating leader is paid as a normal member by default (`FactionPayrollIncludesInitiator`).
+- **How the amount is defined:** a single flat amount per member that the leader specifies. There are no salary tiers.
+- **Insufficient funds:** the full total (`members × amount`) is validated against the treasury balance (and the treasury daily spending limit) *before any credits move*. If the treasury cannot cover the whole run it aborts and pays no one, reporting the required and available amounts.
+- **Safety:** the per-member amount must be positive and within `MaximumFactionPayrollCreditsPerMember`; the member count is bounded by `MaximumFactionPayrollRecipients`; totals use checked arithmetic; a per-initiator cooldown (`FactionPayrollCooldownSeconds`) guards against a duplicate run; each member payment is an individually atomic, restart-recoverable ledger transaction (debit the treasury, then credit the member, with the treasury restored if a credit fails); and concurrent payroll runs against the same treasury are serialized.
+- **Audit / anti-fraud:** every payroll run is stored as a durable record capturing the initiating Steam ID64, faction, treasury, per-member amount, recipient count, and totals; each individual member payment is also a ledger transaction tagged with the initiator's Steam ID. Administrators review runs with `!econadmin payrolls [count]`, so a dishonest founder or leader cannot move faction credits without a permanent, reviewable trail.
+
+## Government taxation
+
+A server can designate one faction as the **government**: it owns an Econ+ faction treasury into which a recurring flat per-player tax is collected. Like every other Econ+ money movement, collection runs through the authoritative accounting layer (`EconomyExpansionService.TryCollectToNamedAccount`) and never calls native Keen banking.
+
+- **Setup (off by default):** set `GovernmentFactionTag` to the government faction's tag, create its treasury with `!econadmin factionaccount create <tag> "name"`, then set `EnableGovernmentTax` to `true`. Enabling the tax only seeds the schedule — it never triggers an immediate surprise assessment.
+- **Assessment:** every `GovernmentTaxIntervalMinutes` (default `43200`, ≈ 30 days of uptime — "monthly") each eligible player is assessed a flat `GovernmentTaxPerPlayerCredits` into the government treasury. The government treasury's owner and managers, and any `GovernmentTaxExemptSteamIds`, are never taxed.
+- **The taxman (arrears + enforcement):** unpaid tax becomes arrears. After `GovernmentTaxGracePeriodMinutes` a `GovernmentTaxLateFeePercent` late fee is added each cycle, and Econ+ keeps auto-collecting up to `GovernmentTaxMaxCollectedPerCycleCredits` per cycle until the debt clears — never driving a balance negative. Players who owe are sent an in-game reminder each cycle. At or above `GovernmentTaxExtremeDebtCredits` (extreme debt) a player's **economy privileges are suspended** (`GovernmentTaxSuspendPrivilegesOnExtremeDebt`) — transfers and loan applications are blocked until they pay — and they are flagged for staff (`GovernmentTaxFlagAdminsOnExtremeDebt`). Grids and physical assets are never seized (Hangar+ owns those); enforcement is purely economic.
+- **Players:** `!econ tax` shows what you owe and the next assessment; `!econ tax pay [amount]` pays your arrears (omit the amount to pay all you can). Paying your balance to zero lifts a suspension immediately.
+- **Admins:** `!econadmin tax` shows the treasury, schedule, and delinquents; `!econadmin tax run` forces a cycle now; `!econadmin tax status <steam-id>` shows one record; `!econadmin tax forgive <steam-id> CONFIRM` clears arrears and lifts a suspension (no credits are moved).
+
+## Governing body and territories
+
+Econ+ can run a **federated government** over the server economy — realistic across both space and planets. The server owner's faction is the overarching **United Faction** (a `Federal` government), and any faction can be chartered as its own `Regional`/`Local` government over territory. Every credit movement flows through the authoritative accounting layer; jurisdiction is read from world state (grid positions) only, never native banking.
+
+- **Territory & jurisdiction:** a government owns **zones** — areas around named grids (a station in orbit, an outpost on a planet), each with a radius and an optional `planetary` flag. A player's live position resolves to the nearest owning zone, else the federal United government. `!econ gov` shows your current jurisdiction and its policy; the `Government` LCD template shows every government's treasury (public budget board).
+- **Territorial revenue (all routed to the jurisdiction's treasury, with an optional `FederalCutPercent` to the United treasury):** **docking fees** when trading at a government station (once per `DockingFeeCooldownSeconds`), **trade tariffs** on market/shop buys in-territory, **extraction royalties** on sells in-territory, and periodic **territory tax** on active residents.
+- **Spending:** **citizen stipend / UBI** pays active residents from a government's treasury each cycle; governments can also fund **grants** and **bonds** (below). Bounties/contracts reuse the scheduled-program engine.
+- **Governance & politics:** a faction founder/leader can `!econ charter` their faction as a regional government (optional `GovernmentCharterFeeCredits` paid to the United treasury). Admins run **elections** (`!econadmin gov election open`), players `!econ vote`, and the winner is announced on close.
+- **Sovereign finance:** governments issue **bonds** (`!econadmin gov bond issue`) that players buy with `!econ bond buy`; coupons and principal are paid automatically from the issuing treasury. A federal **central-bank APR override** (`!econadmin gov apr`, gated by `EnableCentralBankAprOverride`) sets the loan interest rate economy-wide.
+- **Enforcement:** players suspended for unpaid government tax are blocked from transfers, loan applications, and **market/shop buys** until they pay.
+- **Turnkey setup:** create a Faction treasury for your tag, then `!econadmin gov preset <TAG>` charters it as the federal United government and enables territories, docking fees, tariffs, and royalties. Then set policy with `!econadmin gov policy` and add zones with `!econadmin gov zone add`.
+
+Everything here is **off by default** and opt-in; the single-government tax above is the degenerate one-territory case.
 
 ## Standalone accounting and Keen compatibility
 
-Econ+ does not depend on Keen banking to preserve balances. Account records use durable Steam ID64 identity and atomic XML replacement, so world identity changes do not become the accounting key. `ImportKeenBalanceOnFirstUse` can seed a new Econ+ account from the player's current vanilla balance. `MirrorBalancesToKeen` can reflect later Econ+ changes into the vanilla bank for compatibility with game screens and other plugins. A Keen mirror failure never replaces or discards the authoritative Econ+ record. Native `MyBankingSystem` access is confined to a single balance service (the mirror plus first-use import and reconciliation); every other money path - transfers, payroll, loans, escrow, named accounts, faction treasuries, and both markets - moves credits through the internal accounts. `!econadmin boundarytest` scans the compiled plugin and fails if any other code path references native Keen banking.
+Econ+ does not depend on Keen banking to preserve balances. Account records use durable Steam ID64 identity and atomic XML replacement, so world identity changes do not become the accounting key. `ImportKeenBalanceOnFirstUse` can seed a new Econ+ account from the player's current vanilla balance. `MirrorBalancesToKeen` can reflect later Econ+ changes into the vanilla bank for compatibility with game screens and other plugins. A Keen mirror failure never replaces or discards the authoritative Econ+ record.
 
 ## Banking expansion
 
@@ -243,26 +99,6 @@ Econ+ does not depend on Keen banking to preserve balances. Account records use 
 - Scheduled taxes credit the Econ+ treasury; automatic loan servicing runs directly from active loan records.
 - Faction treasuries include manager grants/revocations, configurable daily limits, pending approvals, 24-hour approval expiration, and confirmed large withdrawals.
 - Maintenance mode freezes player transfers, scheduled payments, and plugin escrow creation during incidents or migrations.
-
-## Commodity market
-
-Econ+ runs a dynamic commodity market for Space Engineers materials. Each commodity's price floats on net supply and demand - buying pushes a price up, selling pushes it down - bounded by a per-commodity minimum and maximum and mean-reverting to a base price over time. Trades are credit-settled through the authoritative Econ+ accounts with the treasury acting as the market maker, so buys pay the treasury and sells are funded by it and no credits are minted or burned.
-
-The market lists the server's real item definitions. When the world finishes loading, Econ+ scans `MyDefinitionManager` for every physical item - Keen vanilla and modded - prices each from its vanilla `MinimalPricePerUnit` (with a configurable fallback), stores the exact item type and subtype for delivery, and lists it for trading. A summary is printed to the Torch console at startup (for example, "scanned N physical items found (V vanilla, M modded); market now lists T commodities"), and `!econadmin marketscan` re-runs the scan on demand. Existing commodities are preserved across restarts, so prices and supply/demand state are never reset. Configuration can filter item types, set the price fallback and bounds, and tune elasticity; the `!econ trade` list and `Station` LCD cap their output for large modded catalogs while trading by symbol still works for every item.
-
-The catalog is browsable and exportable. `!econ trade` paginates the full list, `!econ trade <page>` flips pages, and `!econ trade search <text>` filters by symbol or name. Every scan also writes owner reference files into the Econ+ data folder - `MarketCatalog.csv` (every commodity symbol, item, and price) and `ExchangeCatalog.csv` - so nothing has to be memorised.
-
-Prices show a 24h change (a daily reference price that rolls once a day) on `!econ trade`, `!econ trade quote`, and the `Station` LCD. Holdings and the investment portfolio track cost basis, so `!econ trade holdings` and `!econ invest portfolio` show per-line and total unrealised profit and loss.
-
-Players trade with `!econ trade` while near a trade station: a grid named with the configurable `StationNameTag` (default `[ECON+ STATION]`), within `StationRadiusMeters`. `Template=Station` LCD panels show the live board. Physical delivery is on by default (`EnablePhysicalDelivery`): buying deposits the real item into the player's inventory and selling removes it, using only the Space Engineers inventory system and with ordering that prevents duplication before loss. Set it to `false` to trade virtual positions instead. Consumer plugins such as Hangar+ can price and settle trades through `IEconPlusMarketApi` after confirming the `CommodityMarket` capability.
-
-## Player marketplace
-
-Players can sell their own goods to other players on top of the NPC market. `!econ shop sell <symbol> <qty> <price>` reserves the goods (real items are taken from the seller's inventory when physical delivery is on, otherwise a virtual holding) and lists them; `!econ shop` browses listings by page, `!econ shop buy <id> <qty>` buys part or all of a listing, and `!econ shop mine` / `!econ shop cancel <id>` manage your own. Purchases settle from buyer to seller through the authoritative accounts with an optional treasury fee, deliver the goods to the buyer, and never move the NPC market price. Quantity is claimed from the listing before the buyer is charged, and a failed delivery refunds the buyer and restores the listing.
-
-## Investment exchange
-
-Econ+ also runs an investment exchange of abstract shares and indices. Their prices move both on player flow and on a simulated drift that random-walks each tick within per-instrument bounds, so the board is alive between trades. Instruments are abstract, so there is no physical delivery; trades are credit-settled exactly like the commodity market. Players use `!econ invest`, positions appear in `!econ invest portfolio`, and `Template=Exchange` LCD panels show the live ticker with price and change. Instruments can pay optional treasury-funded dividends to shareholders (`EnableDividends`), and savings named accounts can accrue optional treasury-funded interest (`EnableSavingsInterest`); both are off by default and keep credits conserved. Consumer plugins can use `IEconPlusInvestApi` after confirming the `InvestmentExchange` capability.
 
 ## Recovery, reconciliation, and rollback
 
@@ -290,11 +126,6 @@ Name an owned text surface with the configured `[ECON+]` tag. Add one of these l
 - `Template=Loan` for score, debt, and due dates.
 - `Template=Faction` for managed faction treasuries.
 - `Template=Market` for recent Hangar market activity.
-- `Template=Bank` for balance, credit score, and all managed named/faction accounts.
-- `Template=Station` for a live commodity trade-station board. Curate it per panel with `Items=IRON,GOLD` (explicit symbols) and/or `Types=Ore,Ingot` (categories), and rename it with `Title=`. With no filter it shows the full market.
-- `Template=Exchange` for a live share/index ticker with price and change. Curate it with `Items=TROA,HANG` and rename it with `Title=`.
-
-Econ+ panels render in monospace with aligned columns, per-board colour schemes (market green, exchange amber, bank cyan), a title bar, dividers, and an "updated" line.
 
 ## Discord and plugin API
 
@@ -409,26 +240,17 @@ CSV files use `SteamId,Balance,Name`. XML files use an `EconMigrationFile` root 
 !econ reputation
 !econ loans
 !econ loan repay <loan-id> <credits>
-!econ trade [page]
-!econ trade search <text>
-!econ trade quote|buy|sell <symbol> <qty>
-!econ trade holdings
-!econ invest
-!econ invest quote|buy|sell <symbol> <qty>
-!econ invest portfolio
-!econ alert <symbol> gt|lt <price>
-!econ alerts
-!econ alert cancel <id>
-!econ order buy|sell <symbol> <qty> <price>
-!econ orders
-!econ order cancel <id>
-!econ top [n]
-!econ movers
-!econ shop [page]
-!econ shop sell <symbol> <qty> <price>
-!econ shop buy <id> <qty>
-!econ shop mine
-!econ shop cancel <id>
+!econ payroll <credits-per-member> ["purpose"]
+!econ payroll preview <credits-per-member>
+!econ tax
+!econ tax pay [amount]
+!econ gov
+!econ charter
+!econ elections
+!econ vote <election-id> <FACTIONTAG>
+!econ bonds
+!econ bond buy <series-id> <units>
+!econ bonds mine
 
 !econadmin help
 !econadmin status
@@ -444,6 +266,22 @@ CSV files use `SteamId,Balance,Name`. XML files use an `EconMigrationFile` root 
 !econadmin program resume <id>
 !econadmin program cancel <id>
 !econadmin program run
+!econadmin payrolls [count]
+!econadmin tax
+!econadmin tax run
+!econadmin tax status <steam-id>
+!econadmin tax forgive <steam-id> CONFIRM
+!econadmin gov list
+!econadmin gov charter <tag> <Federal|Regional|Local> [parent-tag]
+!econadmin gov remove <tag>
+!econadmin gov preset <tag>
+!econadmin gov policy <tag> <docking-fee> <territory-tax> <tariff%> <royalty%> <stipend>
+!econadmin gov zone add <tag> <grid-name-tag> <radius> [planetary]
+!econadmin gov zone remove <zone-id>
+!econadmin gov apr <percent>
+!econadmin gov bond issue <tag> <face-value> <coupon%> <units> <term-minutes>
+!econadmin gov election open <scope> [minutes]
+!econadmin gov election close <election-id>
 !econadmin risk
 !econadmin anomalies <count>
 !econadmin reputation <steam-id>
@@ -458,10 +296,6 @@ CSV files use `SteamId,Balance,Name`. XML files use an `EconMigrationFile` root 
 !econadmin webhook
 !econadmin webhook test
 !econadmin escrowtest
-!econadmin boundarytest
-!econadmin markettest
-!econadmin investtest
-!econadmin marketscan
 !econadmin treasury
 ```
 
@@ -494,13 +328,9 @@ Compatibility paths:
 ```text
 TROA-Econ-Plus.cfg
 TROA-Econ-PlusData/
-  Accounts.xml
   EconPlusLedger.xml
   EconPlusOperations.xml
   EconPlusAdvanced.xml
-  EconPlusExpansion.xml
-  EconPlusMarket.xml
-  EconPlusInvest.xml
 AuditExports/
   EconPlus-Audit-YYYYMMDD-HHMMSS.csv
 ```
@@ -510,6 +340,8 @@ The TROA prefix remains in filenames for product and upgrade consistency. The de
 ## Scheduled economy setup
 
 `EnablePayroll` is the master switch for automatic scheduled processing. `ScheduledJobPollSeconds` controls how often due work is checked, and `MaximumScheduledJobsPerRun` bounds each pass. `RequireFundedTreasuryPayouts` defaults to `true`; the faction named by `TreasuryFactionTag` must have enough native credits before a payout starts. Set a program interval to `0` for a one-time payout or a positive minute value for a repeating program.
+
+`EnablePayroll` above governs the admin-scheduled program engine (payroll/reward/bounty/contract/deposit programs paid from the global treasury) and is a separate feature from leader-run **faction payroll**, which is governed by `EnableFactionPayroll`. Faction payroll keys: `EnableFactionPayroll` (default `true`, also requires `EnableFactionAccounts`), `FactionPayrollFoundersOnly` (default `false` — founders or leaders), `FactionPayrollIncludesInitiator` (default `true`), `FactionPayrollCooldownSeconds` (default `30`), `MaximumFactionPayrollRecipients` (default `500`), and `MaximumFactionPayrollCreditsPerMember` (default `100000000`). See [Faction payroll](#faction-payroll).
 
 Program definitions and run state survive restarts in `EconPlusOperations.xml`. Each run uses the program ID and durable revision as its external reference. A successful repeating run advances its next UTC execution. Any unresolved payout places the program in `RecoveryRequired` instead of repeatedly attempting another debit.
 
