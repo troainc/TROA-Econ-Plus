@@ -97,6 +97,37 @@
   <MaxBondFaceValueCredits>1000000</MaxBondFaceValueCredits>
   <MaxBondCouponPercent>25</MaxBondCouponPercent>
   <EnableCentralBankAprOverride>false</EnableCentralBankAprOverride>
+  <!-- ===================== Star-Citizen economy loops (Wave 2) =====================
+       Location-based prices (trade routes), ship insurance, a mission/contract board, and
+       contraband/customs. All off by default; all money moves through the authoritative layer.
+       Hangar+ drives these through the Econ+ v2.1 API (insurance claims, contract completion,
+       jurisdiction/docking queries, and location-priced quotes). -->
+  <!-- Trade routes: a per-government price modifier makes commodities cheaper in one territory and
+       dearer in another (set with !econadmin gov pricemod <tag> <percent>). -->
+  <EnableLocationPricing>false</EnableLocationPricing>
+  <MaxTerritoryPriceModifierPercent>50</MaxTerritoryPriceModifierPercent>
+  <!-- Ship insurance: premiums collected into the insurer treasury; claims paid on loss. -->
+  <EnableInsurance>false</EnableInsurance>
+  <!-- Insurer faction tag (its Faction treasury). Empty falls back to the federal government. -->
+  <InsurerFactionTag></InsurerFactionTag>
+  <InsurancePremiumPercent>5</InsurancePremiumPercent>
+  <InsurancePremiumIntervalMinutes>43200</InsurancePremiumIntervalMinutes>
+  <MaxInsuredValueCredits>1000000000</MaxInsuredValueCredits>
+  <MaxInsurancePayoutCredits>1000000000</MaxInsurancePayoutCredits>
+  <InsuranceClaimCooldownMinutes>60</InsuranceClaimCooldownMinutes>
+  <MaxPoliciesPerPlayer>20</MaxPoliciesPerPlayer>
+  <!-- Mission/contract board: rewards escrowed from the poster, captured to the claimant on
+       completion (by Hangar+ or an admin), released on cancel/expiry. -->
+  <EnableContracts>false</EnableContracts>
+  <MaxContractRewardCredits>1000000000</MaxContractRewardCredits>
+  <ContractExpiryHours>72</ContractExpiryHours>
+  <MaxActiveContractsPerPlayer>10</MaxActiveContractsPerPlayer>
+  <!-- Contraband & customs: flag commodities illegal per territory (!econadmin gov contraband add).
+       A customs scan risks a fine, or blocks the trade if ContrabandBlocksTrade is true. -->
+  <EnableContraband>false</EnableContraband>
+  <CustomsScanChancePercent>50</CustomsScanChancePercent>
+  <CustomsFinePercent>25</CustomsFinePercent>
+  <ContrabandBlocksTrade>false</ContrabandBlocksTrade>
   <EnableMaintenanceMode>true</EnableMaintenanceMode>
   <EnableKeenReconciliation>true</EnableKeenReconciliation>
   <EnableAccountRecovery>true</EnableAccountRecovery>

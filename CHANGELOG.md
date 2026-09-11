@@ -1,5 +1,35 @@
 # TROA Econ+ Changelog
 
+## v1.7.0-alpha - Star-Citizen Economy Loops and Hangar+ v2.1 API
+
+- **Trade routes / location pricing:** a per-government commodity **price modifier** makes goods
+  cheaper in one territory and dearer in another, so hauling between jurisdictions is profitable.
+  `!econ route <symbol>` lists a commodity's price across territories; `!econadmin gov pricemod`.
+  New `EconomyMarketService.ComputePriceWithModifier` + location-aware buy/sell overloads
+  (existing callers unchanged). Config `EnableLocationPricing`, `MaxTerritoryPriceModifierPercent`.
+- **Ship insurance:** `!econ insure <grid> <value>` buys a policy; premiums are collected into the
+  insurer treasury (`InsurerFactionTag` or the federal government); on loss, Hangar+/admin files a
+  claim and Econ+ pays a bounded payout. Claims are idempotent on the loss reference and
+  rate-limited per owner. New `EconomyInsuranceStore`/`EconomyInsuranceService`, scheduled premium
+  collection, `!econ policies`/`policy cancel`, `!econadmin insurance claims|claim`.
+- **Mission / contract board:** `!econ contract post` escrows a reward (via the existing durable
+  escrow path); accept, then complete (Hangar+ or admin) captures it to the claimant;
+  cancel/expiry refunds the poster. New `EconomyContractStore`/`EconomyContractService`.
+- **Contraband & customs:** commodities can be flagged illegal per territory
+  (`!econadmin gov contraband add`); trading them risks a chance-based **customs fine** to the
+  government, or is blocked (`ContrabandBlocksTrade`). Extends the governance trade-levy hook.
+- **Econ+ API v2.1 (Hangar+ contract):** version `2.0.0` → `2.1.0` with new capability flags
+  (`LocationPricing`, `Insurance`, `Contracts`, `TerritoryQuery`) and new interfaces —
+  `IEconPlusTerritoryApi` (jurisdiction + docking by position), `IEconPlusMarketLocationApi`
+  (location-priced quotes/trades), `IEconPlusInsuranceApi` (buy policy + **file claim on grid
+  loss**), `IEconPlusContractApi` (**complete on verified delivery**). Positions cross the boundary
+  as plain `double x,y,z`; the v2.0 surface is unchanged so existing consumers keep working.
+- All four loops are **off by default**; every credit movement stays in the authoritative
+  accounting layer and no new code references native Keen banking.
+- Verified: Release build succeeds with 0 warnings / 0 errors against the Torch/SE reference
+  assemblies. The in-game `!econadmin boundarytest` and live self-tests still need to be run on a
+  running Torch server.
+
 ## v1.6.0-alpha - Governing Body and Territorial Economy
 
 - Adds a **federated governing body**. The server owner's faction is the overarching **United

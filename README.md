@@ -86,6 +86,19 @@ Econ+ can run a **federated government** over the server economy — realistic a
 
 Everything here is **off by default** and opt-in; the single-government tax above is the degenerate one-territory case.
 
+## Star-Citizen economy loops
+
+Four opt-in loops turn Econ+ into a Star-Citizen-style economy, all settled through the authoritative accounting layer and all drivable by Hangar+ through the Econ+ **v2.1 API**.
+
+- **Trade routes / hauling:** a per-government commodity **price modifier** (`!econadmin gov pricemod <tag> <percent>`, ±`MaxTerritoryPriceModifierPercent`) makes goods cheaper in one territory and dearer in another. Buy low, haul with a Hangar+ cargo ship (physical delivery), sell high. `!econ route <symbol>` lists a commodity's price across territories, cheapest to dearest. Requires `EnableLocationPricing`.
+- **Ship insurance:** `!econ insure <gridName> <value>` buys a policy; a recurring premium is collected into the **insurer treasury** (`InsurerFactionTag`, or the federal government). On the hull's loss, Hangar+ (or an admin) files a claim and Econ+ pays a bounded payout. Claims are idempotent on the loss reference and rate-limited per owner. `!econ policies`, `!econ policy cancel <id>`; admin `!econadmin insurance claims|claim`.
+- **Mission / contract board:** `!econ contract post <type> <reward> "desc"` escrows the reward from the poster; a player `!econ contract accept`s it and, on verified completion (Hangar+ or `!econ contract complete`), the escrow is captured to them. Cancel/expiry refunds the poster. Types: Delivery, Bounty, Escort, Custom. Requires `EnableContracts`.
+- **Contraband & customs:** admins flag commodities illegal per territory (`!econadmin gov contraband add <tag> <symbol>`). Trading contraband in that jurisdiction risks a **customs fine** (chance-based, to the government) or is blocked outright (`ContrabandBlocksTrade`). Requires `EnableContraband`.
+
+### Hangar+ integration (Econ+ API v2.1)
+
+Hangar+ discovers Econ+ (`EconPlusApiRegistry.TryDiscover("Hangar+", "2.1.0", …)`) and, alongside the existing escrow/transfer/market surface, gains: `IEconPlusTerritoryApi` (jurisdiction + docking at a position), `IEconPlusMarketLocationApi` (location-priced quotes/trades), `IEconPlusInsuranceApi` (buy policy + **file claim on grid loss**), and `IEconPlusContractApi` (**complete a contract on verified delivery**). Positions cross the boundary as plain `double x,y,z`. The v2.0 surface is unchanged, so existing consumers keep working.
+
 ## Standalone accounting and Keen compatibility
 
 Econ+ does not depend on Keen banking to preserve balances. Account records use durable Steam ID64 identity and atomic XML replacement, so world identity changes do not become the accounting key. `ImportKeenBalanceOnFirstUse` can seed a new Econ+ account from the player's current vanilla balance. `MirrorBalancesToKeen` can reflect later Econ+ changes into the vanilla bank for compatibility with game screens and other plugins. A Keen mirror failure never replaces or discards the authoritative Econ+ record.
@@ -251,6 +264,15 @@ CSV files use `SteamId,Balance,Name`. XML files use an `EconMigrationFile` root 
 !econ bonds
 !econ bond buy <series-id> <units>
 !econ bonds mine
+!econ route <symbol>
+!econ insure <grid-name> <value>
+!econ policies
+!econ policy cancel <id>
+!econ contracts
+!econ contract post <Delivery|Bounty|Escort|Custom> <reward> "desc"
+!econ contract accept <id>
+!econ contract complete <id>
+!econ contract cancel <id>
 
 !econadmin help
 !econadmin status
@@ -282,6 +304,12 @@ CSV files use `SteamId,Balance,Name`. XML files use an `EconMigrationFile` root 
 !econadmin gov bond issue <tag> <face-value> <coupon%> <units> <term-minutes>
 !econadmin gov election open <scope> [minutes]
 !econadmin gov election close <election-id>
+!econadmin gov pricemod <tag> <percent>
+!econadmin gov contraband add <tag> <symbol>
+!econadmin gov contraband remove <tag> <symbol>
+!econadmin insurance claims [count]
+!econadmin insurance claim <owner-steam-id> <policy-id-or-grid> <loss-value> [loss-ref]
+!econadmin contract complete <contract-id> <steam-id>
 !econadmin risk
 !econadmin anomalies <count>
 !econadmin reputation <steam-id>
