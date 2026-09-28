@@ -16,6 +16,7 @@
   territories, `Symbol=`), **Insurance** (your policies), **Bonds** (open series), and **Help**
   (getting-started commands). Existing Station/Exchange/Government/Bank/Faction/Loan/Compact panels
   were reworked onto the same look; `Template=Detailed` maps to `Dashboard`.
+- The public full config example follows the latest v1.8.0-alpha schema; newer settings require a plugin build that implements them.
 - New config: `LcdUseSprites` (default true), `LcdDefaultRenderMode` (default "Sprite");
   `DefaultLcdTemplate` now defaults to `Dashboard`.
 - Verified: Release build succeeds with 0 warnings / 0 errors against the Torch/SE reference

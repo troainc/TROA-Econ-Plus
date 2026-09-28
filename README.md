@@ -6,6 +6,8 @@ TROA Econ+ is a server-side Torch economy plugin for Space Engineers. It provide
 > Runtime: Torch / .NET Framework 4.8 / x64  
 > Interface: Space Engineers chat commands, XML configuration, and server-side plugin API only
 
+The public `TROA-Econ-Plus.cfg.example` contains the full latest v1.8.0-alpha configuration schema. Settings are honored only by builds that implement them; check your installed plugin release before enabling newer options.
+
 ## Installation
 
 1. Back up the world, `TROA-Econ-Plus.cfg`, and `TROA-Econ-PlusData`.
