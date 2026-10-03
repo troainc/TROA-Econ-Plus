@@ -44,3 +44,7 @@ The current public configuration example documents the v1.8.0-alpha settings sch
 Econ+ is the authoritative owner of its credit accounts and transaction records. The optional Keen balance mirror is a compatibility feature; it does not make Keen banking the source of truth. Hangar+ owns ship/grid listings and custody, and can use Econ+ for safe settlement through the plugin API.
 
 Read the [License](LICENSE.md) before using or redistributing the plugin. For help, use [SUPPORT.md](SUPPORT.md).
+
+## Documentation
+
+The README is the quick start. Use [`docs/README.md`](docs/README.md) to navigate the player guide, server-owner setup, configuration reference, commands, and troubleshooting.

@@ -346,3 +346,7 @@ surfaced through chat commands, LCD panels, and the server-side plugin API.
 - .NET Framework 4.8 x64 Release build with zero warnings and zero errors.
 - Isolated self-tests all pass: Keen boundary, escrow contract, commodity market, and investment
   exchange. Physical goods delivery is compile- and API-verified and awaits live-server testing.
+
+## Documentation navigation - 2026-10-03
+
+- Added a direct README link to the Econ+ documentation index and setup handbook.
