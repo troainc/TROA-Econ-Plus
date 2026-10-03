@@ -1,421 +1,46 @@
 # TROA Econ+
 
-TROA Econ+ is a server-side Torch economy plugin for Space Engineers. It provides durable accounting, escrow, treasury policy, and a versioned integration API for Hangar+ and other TROA plugins. It has no client mod, desktop UI, web UI, WPF, or WinForms dependency.
+TROA Econ+ is a server-side economy plugin for Space Engineers running on Torch. Players use chat commands to check balances, pay each other, trade items, and use the other economy features enabled by the server owner. There is no client mod or separate player app.
 
-> Current release: `v0.9.5-alpha`
-> Runtime: Torch / .NET Framework 4.8 / x64  
-> Interface: Space Engineers chat commands, XML configuration, and server-side plugin API only
+## Players: start here
 
-The public `TROA-Econ-Plus.cfg.example` contains the full latest v1.8.0-alpha configuration schema. Settings are honored only by builds that implement them; check your installed plugin release before enabling newer options.
+Use these commands in game chat:
 
-## Installation
+| What you want to do | Command |
+|---|---|
+| See the command list | `!econ help` |
+| Check your Econ+ account | `!econ dashboard` |
+| Check your Keen balance mirror | `!econ balance` |
+| Pay another player | `!econ pay <steam-id> <credits>` |
+| Pay a known offline player | `!econ payto <name-or-steam-id> <credits>` |
+| See recent transactions | `!econ history <count>` |
+| Browse the item market | `!econ trade` |
+| Look up an item | `!econ trade search <name>` |
+| Buy or sell at a trade station | `!econ trade buy <symbol> <quantity>` / `!econ trade sell <symbol> <quantity>` |
+| Browse player listings | `!econ shop` |
 
-1. Back up the world, `TROA-Econ-Plus.cfg`, and `TROA-Econ-PlusData`.
-2. Install `releases/TROA-Econ-Plus-v0.9.5-alpha.zip` through Torch.
-3. Restart Torch so the updated command modules and API are loaded.
-4. Review the generated configuration before enabling payroll, Nexus safeguards, or credit products.
-5. Run `!econadmin status`, `!econadmin escrowtest`, and `!econadmin webhook test` where applicable.
-6. Validate small transactions on a disposable development server before production use.
+The server owner controls which features are enabled. For worked examples and the rest of the player commands, see the [Player Guide](docs/PLAYER-GUIDE.md).
 
-## Current foundation
+## Server owners: set up Econ+
 
-- Econ+ balances stored by Steam ID64 in `TROA-Econ-PlusData/Accounts.xml` are authoritative.
-- Optional one-time Keen balance import and best-effort Keen balance mirroring preserve vanilla compatibility without making Keen banking the source of truth.
-- Player account LCD dashboards show balance, reputation, loans, debt, and recent activity without a client mod.
-- Durable XML transaction ledger with explicit states and atomic saves.
-- Durable checkpoints before every native debit, credit, treasury movement, reversal, and refund attempt.
-- Strict idempotency matching that rejects reuse of a reference with different transaction details.
-- Conservative restart recovery and fail-closed corrupt-ledger preservation.
-- Player balance, payment, and transaction-history commands.
-- Configurable transfer limits, cooldown, percentage fee, and treasury faction.
-- Versioned `IEconPlusApi` for server-side plugin integrations.
-- Idempotent external references for retry-safe consumer operations.
-- Durable escrow holds with capture and release operations.
-- Semantic API v1.1 capability discovery for Hangar+ and other server-side consumers.
-- Mutually exclusive capture/release settlement claims so the same hold cannot be credited and refunded.
-- An isolated administrator escrow contract check that never touches live player balances.
-- Separate transfer fee and tax calculations with deterministic upward rounding, an optional combined-charge cap, Steam-ID exemptions, and treasury-or-sink routing.
-- Administrator status, reload, and recovery-queue commands.
-- Release ZIP packaging for Torch on .NET Framework 4.8.
-- Personal statements plus administrator search, reconciliation, adjustments, and CSV audit exports.
-- Durable faction-treasury payroll, rewards, bounties, contracts, deposits, and scheduled jobs.
-- Automatic scheduled-job execution on the Space Engineers game thread with idempotent revision references.
+Start with the [Server Owner Setup Guide](docs/SERVER-OWNER-SETUP.md). It walks through installation, first startup, configuring accounts and the market, testing, backups, and optional features. The [Configuration Guide](docs/CONFIGURATION.md) explains what to change and when; the complete public XML sample is [`TROA-Econ-Plus.cfg.example`](TROA-Econ-Plus.cfg.example).
 
-## Player commands
+The docs are organized as a small handbook. Start with the [Documentation Index](docs/README.md):
 
-- `!econ help` lists all player commands.
-- `!econ balance` and `!econ dashboard` show the player's Econ+ account.
-- `!econ pay <steam-id> <credits>` transfers internal credits safely.
-- `!econ history <count>` and `!econ statement <count>` show durable activity.
-- `!econ risk` shows the player's current configured limits and recent usage.
-- `!econ loans`, `!econ loanapply <credits> <days> "purpose"`, and `!econ loanrepay <loan-id> <credits>` provide player credit tools.
-- `!econ payroll <credits-per-member> ["purpose"]` lets an authorized faction founder or leader pay every eligible faction member a flat amount from the faction treasury; `!econ payroll preview <credits-per-member>` shows the recipients and total cost first without paying anyone. See [Faction payroll](#faction-payroll).
-- Name an owned text surface with `[ECON+]` (configurable) to display the player's live account dashboard.
+- [Server Owner Setup](docs/SERVER-OWNER-SETUP.md) — install and configure a working server economy.
+- [Configuration Guide](docs/CONFIGURATION.md) — feature switches, defaults, and safe setup order.
+- [Command Reference](docs/COMMANDS.md) — player and administrator commands with examples.
+- [Player Guide](docs/PLAYER-GUIDE.md) — explain balances, payments, trading, accounts, loans, and other enabled features to players.
+- [Troubleshooting and Data Safety](docs/TROUBLESHOOTING.md) — common problems, backup, recovery, and safe reporting.
 
-## Faction payroll
+## Downloads and compatibility
 
-Faction payroll lets an authorized faction leader pay the whole faction from the faction's own Econ+ treasury, using the same authoritative accounting layer as every other Econ+ money movement — it never calls native Keen banking and never creates credits.
+Use the plugin package supplied for the release you are installing, and keep its version matched to your server. This repository is the public documentation and configuration-example repository; it does not contain the closed-source plugin implementation. See [GitHub Releases](https://github.com/troainc/TROA-Econ-Plus/releases) for published packages, if available, and [CHANGELOG.md](CHANGELOG.md) for documented feature changes.
 
-- **Who can run it:** a founder or a leader-ranked officer of the faction (live Space Engineers faction state, verified on the server). Set `FactionPayrollFoundersOnly` to `true` to restrict it to founders only. A client-side or command-UI check is never trusted.
-- **Where the money comes from:** the faction's Econ+ treasury — a `Faction` named account whose tag matches the faction, created by an administrator with `!econadmin factionaccount create <tag> "name"`. Payroll never creates a treasury; if none exists the command explains how an admin can add one.
-- **Who gets paid:** every current faction member whose identity resolves to a Steam ID64 (offline members included, since the account model supports offline balances). Members without a resolvable identity are skipped so payroll never targets a deleted or unknown player. The initiating leader is paid as a normal member by default (`FactionPayrollIncludesInitiator`).
-- **How the amount is defined:** a single flat amount per member that the leader specifies. There are no salary tiers.
-- **Insufficient funds:** the full total (`members × amount`) is validated against the treasury balance (and the treasury daily spending limit) *before any credits move*. If the treasury cannot cover the whole run it aborts and pays no one, reporting the required and available amounts.
-- **Safety:** the per-member amount must be positive and within `MaximumFactionPayrollCreditsPerMember`; the member count is bounded by `MaximumFactionPayrollRecipients`; totals use checked arithmetic; a per-initiator cooldown (`FactionPayrollCooldownSeconds`) guards against a duplicate run; each member payment is an individually atomic, restart-recoverable ledger transaction (debit the treasury, then credit the member, with the treasury restored if a credit fails); and concurrent payroll runs against the same treasury are serialized.
-- **Audit / anti-fraud:** every payroll run is stored as a durable record capturing the initiating Steam ID64, faction, treasury, per-member amount, recipient count, and totals; each individual member payment is also a ledger transaction tagged with the initiator's Steam ID. Administrators review runs with `!econadmin payrolls [count]`, so a dishonest founder or leader cannot move faction credits without a permanent, reviewable trail.
+The current public configuration example documents the v1.8.0-alpha settings schema. A setting only works when the installed plugin build implements it. Econ+ runs on Torch for Space Engineers using .NET Framework 4.8, x64.
 
-## Government taxation
+## Economy ownership
 
-A server can designate one faction as the **government**: it owns an Econ+ faction treasury into which a recurring flat per-player tax is collected. Like every other Econ+ money movement, collection runs through the authoritative accounting layer (`EconomyExpansionService.TryCollectToNamedAccount`) and never calls native Keen banking.
+Econ+ is the authoritative owner of its credit accounts and transaction records. The optional Keen balance mirror is a compatibility feature; it does not make Keen banking the source of truth. Hangar+ owns ship/grid listings and custody, and can use Econ+ for safe settlement through the plugin API.
 
-- **Setup (off by default):** set `GovernmentFactionTag` to the government faction's tag, create its treasury with `!econadmin factionaccount create <tag> "name"`, then set `EnableGovernmentTax` to `true`. Enabling the tax only seeds the schedule — it never triggers an immediate surprise assessment.
-- **Assessment:** every `GovernmentTaxIntervalMinutes` (default `43200`, ≈ 30 days of uptime — "monthly") each eligible player is assessed a flat `GovernmentTaxPerPlayerCredits` into the government treasury. The government treasury's owner and managers, and any `GovernmentTaxExemptSteamIds`, are never taxed.
-- **The taxman (arrears + enforcement):** unpaid tax becomes arrears. After `GovernmentTaxGracePeriodMinutes` a `GovernmentTaxLateFeePercent` late fee is added each cycle, and Econ+ keeps auto-collecting up to `GovernmentTaxMaxCollectedPerCycleCredits` per cycle until the debt clears — never driving a balance negative. Players who owe are sent an in-game reminder each cycle. At or above `GovernmentTaxExtremeDebtCredits` (extreme debt) a player's **economy privileges are suspended** (`GovernmentTaxSuspendPrivilegesOnExtremeDebt`) — transfers and loan applications are blocked until they pay — and they are flagged for staff (`GovernmentTaxFlagAdminsOnExtremeDebt`). Grids and physical assets are never seized (Hangar+ owns those); enforcement is purely economic.
-- **Players:** `!econ tax` shows what you owe and the next assessment; `!econ tax pay [amount]` pays your arrears (omit the amount to pay all you can). Paying your balance to zero lifts a suspension immediately.
-- **Admins:** `!econadmin tax` shows the treasury, schedule, and delinquents; `!econadmin tax run` forces a cycle now; `!econadmin tax status <steam-id>` shows one record; `!econadmin tax forgive <steam-id> CONFIRM` clears arrears and lifts a suspension (no credits are moved).
-
-## Governing body and territories
-
-Econ+ can run a **federated government** over the server economy — realistic across both space and planets. The server owner's faction is the overarching **United Faction** (a `Federal` government), and any faction can be chartered as its own `Regional`/`Local` government over territory. Every credit movement flows through the authoritative accounting layer; jurisdiction is read from world state (grid positions) only, never native banking.
-
-- **Territory & jurisdiction:** a government owns **zones** — areas around named grids (a station in orbit, an outpost on a planet), each with a radius and an optional `planetary` flag. A player's live position resolves to the nearest owning zone, else the federal United government. `!econ gov` shows your current jurisdiction and its policy; the `Government` LCD template shows every government's treasury (public budget board).
-- **Territorial revenue (all routed to the jurisdiction's treasury, with an optional `FederalCutPercent` to the United treasury):** **docking fees** when trading at a government station (once per `DockingFeeCooldownSeconds`), **trade tariffs** on market/shop buys in-territory, **extraction royalties** on sells in-territory, and periodic **territory tax** on active residents.
-- **Spending:** **citizen stipend / UBI** pays active residents from a government's treasury each cycle; governments can also fund **grants** and **bonds** (below). Bounties/contracts reuse the scheduled-program engine.
-- **Governance & politics:** a faction founder/leader can `!econ charter` their faction as a regional government (optional `GovernmentCharterFeeCredits` paid to the United treasury). Admins run **elections** (`!econadmin gov election open`), players `!econ vote`, and the winner is announced on close.
-- **Sovereign finance:** governments issue **bonds** (`!econadmin gov bond issue`) that players buy with `!econ bond buy`; coupons and principal are paid automatically from the issuing treasury. A federal **central-bank APR override** (`!econadmin gov apr`, gated by `EnableCentralBankAprOverride`) sets the loan interest rate economy-wide.
-- **Enforcement:** players suspended for unpaid government tax are blocked from transfers, loan applications, and **market/shop buys** until they pay.
-- **Turnkey setup:** create a Faction treasury for your tag, then `!econadmin gov preset <TAG>` charters it as the federal United government and enables territories, docking fees, tariffs, and royalties. Then set policy with `!econadmin gov policy` and add zones with `!econadmin gov zone add`.
-
-Everything here is **off by default** and opt-in; the single-government tax above is the degenerate one-territory case.
-
-## Star-Citizen economy loops
-
-Four opt-in loops turn Econ+ into a Star-Citizen-style economy, all settled through the authoritative accounting layer and all drivable by Hangar+ through the Econ+ **v2.1 API**.
-
-- **Trade routes / hauling:** a per-government commodity **price modifier** (`!econadmin gov pricemod <tag> <percent>`, ±`MaxTerritoryPriceModifierPercent`) makes goods cheaper in one territory and dearer in another. Buy low, haul with a Hangar+ cargo ship (physical delivery), sell high. `!econ route <symbol>` lists a commodity's price across territories, cheapest to dearest. Requires `EnableLocationPricing`.
-- **Ship insurance:** `!econ insure <gridName> <value>` buys a policy; a recurring premium is collected into the **insurer treasury** (`InsurerFactionTag`, or the federal government). On the hull's loss, Hangar+ (or an admin) files a claim and Econ+ pays a bounded payout. Claims are idempotent on the loss reference and rate-limited per owner. `!econ policies`, `!econ policy cancel <id>`; admin `!econadmin insurance claims|claim`.
-- **Mission / contract board:** `!econ contract post <type> <reward> "desc"` escrows the reward from the poster; a player `!econ contract accept`s it and, on verified completion (Hangar+ or `!econ contract complete`), the escrow is captured to them. Cancel/expiry refunds the poster. Types: Delivery, Bounty, Escort, Custom. Requires `EnableContracts`.
-- **Contraband & customs:** admins flag commodities illegal per territory (`!econadmin gov contraband add <tag> <symbol>`). Trading contraband in that jurisdiction risks a **customs fine** (chance-based, to the government) or is blocked outright (`ContrabandBlocksTrade`). Requires `EnableContraband`.
-
-### Hangar+ integration (Econ+ API v2.1)
-
-Hangar+ discovers Econ+ (`EconPlusApiRegistry.TryDiscover("Hangar+", "2.1.0", …)`) and, alongside the existing escrow/transfer/market surface, gains: `IEconPlusTerritoryApi` (jurisdiction + docking at a position), `IEconPlusMarketLocationApi` (location-priced quotes/trades), `IEconPlusInsuranceApi` (buy policy + **file claim on grid loss**), and `IEconPlusContractApi` (**complete a contract on verified delivery**). Positions cross the boundary as plain `double x,y,z`. The v2.0 surface is unchanged, so existing consumers keep working.
-
-## Standalone accounting and Keen compatibility
-
-Econ+ does not depend on Keen banking to preserve balances. Account records use durable Steam ID64 identity and atomic XML replacement, so world identity changes do not become the accounting key. `ImportKeenBalanceOnFirstUse` can seed a new Econ+ account from the player's current vanilla balance. `MirrorBalancesToKeen` can reflect later Econ+ changes into the vanilla bank for compatibility with game screens and other plugins. A Keen mirror failure never replaces or discards the authoritative Econ+ record.
-
-## Banking expansion
-
-- Offline and exact-name payments resolve to durable Steam ID64 records; ambiguous names fail safely.
-- Personal checking, savings, business, and managed faction treasury records persist in `EconPlusExpansion.xml`.
-- Checking-to-account deposits, withdrawals, and named-account payments use durable debit, settlement, reversal, and recovery checkpoints.
-- Repeating payment, rent, subscription, tax, and loan-payment schedules use durable revision-based references.
-- Scheduled taxes credit the Econ+ treasury; automatic loan servicing runs directly from active loan records.
-- Faction treasuries include manager grants/revocations, configurable daily limits, pending approvals, 24-hour approval expiration, and confirmed large withdrawals.
-- Maintenance mode freezes player transfers, scheduled payments, and plugin escrow creation during incidents or migrations.
-
-## Recovery, reconciliation, and rollback
-
-- Signed backups include every Econ+ database plus a SHA-256 manifest.
-- Account exports produce CSV plus a detached SHA-256 file.
-- Guarded migration accepts validated CSV or XML only from `TROA-Econ-PlusData/Imports`, rejects duplicate/negative/overflow balances, creates a signed backup first, and requires `IMPORT` confirmation.
-- Ledger recovery offers a no-change preview and requires the exact `REBUILD` confirmation.
-- Keen reconciliation reports drift without changing balances; repair requires the expected drift and `CONFIRM`.
-- Keen import creates a signed backup before replacing one authoritative Econ+ account.
-- Rollback never edits transaction history. It creates a new idempotent compensating transaction and fails safely if the recipient cannot fund it.
-
-## Credit and fraud controls
-
-- Credit scores range from 300–850 and derive from durable reputation signals.
-- Loan policy supports minimum score, grace periods, one-time late fees, refinancing, and configurable automatic-payment/reminder settings.
-- Fraud monitoring flags repeated failures, rapid transaction velocity, high credit volume, unusually large transfers, authoritative balance jumps, and multi-recipient funnel patterns.
-- Findings remain audit signals; Econ+ does not automatically ban players.
-
-## LCD panels
-
-Name an owned text surface (or any surface-provider block) with the configured `[ECON+]` tag, then add a `Template=` line to its Custom Data. Panels render as **drawn graphics** (colored header, KPI tiles, bars, status pills, tables) by default and fall back to clean auto-fit **text** automatically — pick per panel with `Render=Sprite` or `Render=Text`. `Style=false` keeps full manual control (plain text, no styling). Server defaults are `LcdUseSprites` and `LcdDefaultRenderMode`.
-
-Player panels (use the panel owner's account):
-
-- `Template=Dashboard` — balance, credit score bar, reputation, tax owed + a **SUSPENDED** pill, loans, active contracts, insured ships, recent activity, and quick commands. (Default.)
-- `Template=Tax` — the government whose territory the panel physically sits in, its fees/tariff/royalty, **your** tax owed, next assessment, and suspension status.
-- `Template=Insurance` — your ship-insurance policies and premiums.
-- `Template=Bank` / `Faction` / `Loan` / `Compact` — managed accounts, faction treasuries, loans, or a compact summary.
-
-Shared/world panels (no owner needed):
-
-- `Template=Station` — the commodity board; curate with `Items=IRON,GOLD` and/or `Types=Ore,Ingot`, rename with `Title=`.
-- `Template=Exchange` — the investment ticker.
-- `Template=Route` — a commodity's price across territories, cheapest→dearest; set `Symbol=IRON`.
-- `Template=Contracts` — the open mission/contract board.
-- `Template=Bonds` — government bonds open for purchase.
-- `Template=Government` — every government's treasury (public budget board).
-- `Template=Help` — a getting-started command list.
-
-## Discord and plugin API
-
-- Discord remains optional and never controls balances.
-- A separate banking webhook posts polished masked-account embeds to a staff-controlled private channel; Discord webhooks cannot guarantee true direct messages and transaction statements remain in-game unless separately authorized.
-- API v2 adds standalone-account, offline-payment, named-account, and maintenance capabilities while preserving the v1 escrow interface.
-- Hangar, GridVault, jobs, stores, rewards, and future plugins can discover capabilities and use stable idempotency references.
-
-## Historical economy reports
-
-Econ+ stores periodic supply snapshots in `EconPlusExpansion.xml`. `!econadmin report [days]` compares current supply with historical snapshots to report inflation or deflation, median wealth, top-decile concentration, transaction volume, sinks, sources, and inactive accounts. Snapshot interval and retention are configurable.
-
-## Migration format
-
-CSV files use `SteamId,Balance,Name`. XML files use an `EconMigrationFile` root containing `Accounts` entries with `SteamId`, `Balance`, and optional `Name`. Run `!econadmin accounts import <filename> <merge|replace> IMPORT`. Replace mode replaces player accounts only after a signed backup; treasury state is preserved.
-
-## Implemented through Phase 9
-
-### Operations and reconciliation
-
-- Player and administrator statements with bounded output.
-- Transaction search across IDs, external references, purposes, and durable details.
-- Treasury-funded, reason-required positive staff adjustments with administrator attribution.
-- Durable reconciliation summaries and UTF-8 CSV audit exports.
-- Separate atomic operations storage for scheduled programs, reconciliations, and adjustment evidence.
-- Configurable balance and transfer limits, daily caps, cooldowns, and exemptions.
-- Conservative startup recovery and staff-reviewed correction entries.
-
-### Hangar+ and TROA plugin integration
-
-- Market purchase holds, seller captures, buyer refunds, listing fees, Blackmarket fees, and commodity escrow.
-- Stable external transaction references so retries never charge twice.
-- Capability discovery and semantic API versions.
-- Per-plugin permissions, limits, audit labels, and circuit breakers.
-- Optional webhook events that retain each plugin's configured Discord identity.
-
-### Treasuries, taxes, and fees
-
-- Server and faction treasuries.
-- Sales tax, transfer tax, listing fees, station fees, docking/storage fees, and configurable sinks.
-- Region, station, faction, item-category, and reputation-based policy rules.
-- Tax exemptions and transparent transaction breakdowns.
-- Scheduled treasury reports and sink/source analytics.
-
-### Scheduled economy
-
-- One-time or recurring faction-treasury payroll, rewards, bounties, contracts, and deposits.
-- Funded-balance validation before every treasury debit.
-- Durable per-run idempotency references and automatic pause into `RecoveryRequired` on an unresolved payout.
-- Automatic polling with native banking dispatched onto the Space Engineers game thread.
-- Pause, resume, cancel, list, and manual due-run administrator controls.
-
-### Risk controls and reputation
-
-- Configurable API-plugin allowlist enforced before escrow debit preparation.
-- Rolling transaction-count and credit-volume limits plus a daily payer limit.
-- Durable anomaly flags for denied plugins, velocity limits, daily limits, and unusually large accepted transfers.
-- Non-punitive reputation signals based on completed, failed, and recovery-required outcomes.
-- Risk controls default on; reputation is informational and never bans a player automatically.
-
-### Nexus authority safeguards
-
-- Explicit local server ID and designated authority server ID.
-- Single-writer checks before cross-server economy work.
-- Short durable player leases to prevent concurrent writers.
-- Durable replay IDs and payload-hash conflict rejection.
-- Nexus synchronization defaults off. Econ+ supplies authority safeguards, not a bundled Nexus transport adapter; an approved adapter must deliver authenticated messages into these guards.
-
-### Analytics
-
-- UTC-window transaction totals, completed volume, fees, taxes, refunds, held funds, failures, recovery counts, and unique-player counts.
-- Server-local CSV audit exports remain separate from Discord notifications.
-- Analytics read durable ledger state and never alter balances.
-
-### Optional credit products
-
-- Administrator-approved, treasury-funded loans with configurable principal, APR, term, payment interval, and per-player active-loan limits.
-- Interest accrues explicitly by completed UTC days; no hidden compounding timer changes native balances.
-- Borrower repayments use the same prepared/debit/held/credit/completed checkpoint model as other transfers.
-- Ambiguous loan operations enter `RecoveryRequired`; there are no automatic collections or collateral seizures.
-- Credit products default off and should remain disabled until the server has validated escrow and recovery behavior in production.
-
-### Banking tools
-
-- Player-to-player transfers and payment requests.
-- Named accounts and server-approved organization wallets.
-- Deposit holds, withdrawal limits, freeze/unfreeze, and staff recovery.
-- Optional loans, interest, collateral references, and default handling after the safe core is proven.
-
-### Cross-server economy
-
-- Optional Nexus v3 server discovery and balance authority routing.
-- Globally unique transactions, replay protection, custody locks, reconciliation, and recovery queues.
-- Aggregated network analytics without broadcasting private player balances.
-
-### Risk, reputation, and analytics
-
-- Velocity limits and duplicate/replay detection.
-- Configurable anomaly flags without automatic punitive action by default.
-- Economy supply, sinks, sources, transaction volume, treasury movement, and plugin usage metrics.
-- Reputation inputs exposed to Hangar+, Blackmarket, contracts, and other TROA systems.
-
-## Commands
-
-```text
-!econ help
-!econ balance
-!econ pay <steam-id> <credits>
-!econ history <count>
-!econ statement <count>
-!econ programs
-!econ reputation
-!econ loans
-!econ loan repay <loan-id> <credits>
-!econ payroll <credits-per-member> ["purpose"]
-!econ payroll preview <credits-per-member>
-!econ tax
-!econ tax pay [amount]
-!econ gov
-!econ charter
-!econ elections
-!econ vote <election-id> <FACTIONTAG>
-!econ bonds
-!econ bond buy <series-id> <units>
-!econ bonds mine
-!econ route <symbol>
-!econ insure <grid-name> <value>
-!econ policies
-!econ policy cancel <id>
-!econ contracts
-!econ contract post <Delivery|Bounty|Escort|Custom> <reward> "desc"
-!econ contract accept <id>
-!econ contract complete <id>
-!econ contract cancel <id>
-
-!econadmin help
-!econadmin status
-!econadmin reload
-!econadmin search <text> <count>
-!econadmin statement <steam-id> <count>
-!econadmin adjust <steam-id> <credits> "reason"
-!econadmin reconcile "note"
-!econadmin export [steam-id]
-!econadmin program add <Payroll|Reward|Bounty|Contract|Deposit> <steam-id> <credits> <interval-minutes> "name"
-!econadmin program list
-!econadmin program pause <id>
-!econadmin program resume <id>
-!econadmin program cancel <id>
-!econadmin program run
-!econadmin payrolls [count]
-!econadmin tax
-!econadmin tax run
-!econadmin tax status <steam-id>
-!econadmin tax forgive <steam-id> CONFIRM
-!econadmin gov list
-!econadmin gov charter <tag> <Federal|Regional|Local> [parent-tag]
-!econadmin gov remove <tag>
-!econadmin gov preset <tag>
-!econadmin gov policy <tag> <docking-fee> <territory-tax> <tariff%> <royalty%> <stipend>
-!econadmin gov zone add <tag> <grid-name-tag> <radius> [planetary]
-!econadmin gov zone remove <zone-id>
-!econadmin gov apr <percent>
-!econadmin gov bond issue <tag> <face-value> <coupon%> <units> <term-minutes>
-!econadmin gov election open <scope> [minutes]
-!econadmin gov election close <election-id>
-!econadmin gov pricemod <tag> <percent>
-!econadmin gov contraband add <tag> <symbol>
-!econadmin gov contraband remove <tag> <symbol>
-!econadmin insurance claims [count]
-!econadmin insurance claim <owner-steam-id> <policy-id-or-grid> <loss-value> [loss-ref]
-!econadmin contract complete <contract-id> <steam-id>
-!econadmin risk
-!econadmin anomalies <count>
-!econadmin reputation <steam-id>
-!econadmin nexus
-!econadmin nexus lease <steam-id>
-!econadmin analytics <days>
-!econadmin loan issue <steam-id> <credits> <days> "purpose"
-!econadmin loan list [steam-id]
-!econadmin recovery
-!econadmin recovery inspect <transaction-id-or-unique-prefix>
-!econadmin recovery finalize <transaction-id-or-prefix> <revision> <Completed|Refunded|Failed> "<audit note>"
-!econadmin webhook
-!econadmin webhook test
-!econadmin escrowtest
-!econadmin treasury
-```
-
-## Integration example
-
-Hangar+ first discovers Econ+ and verifies the semantic version and required capabilities, then creates one stable transaction reference for a purchase:
-
-```text
-EconPlusApiRegistry.TryDiscover("Hangar+", "1.1.0", out api, out capabilities, out error)
-TryCreateHold("Hangar+", purchaseId, buyerSteamId, amount, "Market purchase")
-TryCaptureHold(transactionId, sellerSteamId)
-```
-
-If grid settlement fails before capture, Hangar+ calls `TryReleaseHold`. Repeating the same external reference returns the existing record rather than charging the buyer again.
-
-Consumer plugins must call economy operations on the Space Engineers game thread until a later Econ+ API version explicitly provides thread dispatch.
-
-`!econadmin escrowtest` runs an isolated fake-bank contract suite covering duplicate hold, capture and release retries, conflicting idempotency references, restart retry, and capture-versus-release claims. It creates temporary test-ledger data beneath the plugin storage folder, removes it afterward, and never reads or changes a live Space Engineers balance.
-
-## Treasury policy
-
-Player transfers can apply a fee through `TransferFeePercent` and, when `EnableTaxes` is true, a separate tax through `PlayerTransferTaxPercent`. Each component rounds upward to a whole credit. `MaximumCombinedChargeCredits` can cap their combined value; `0` means no cap. `ExemptSteamIds` accepts comma- or semicolon-separated Steam ID64 values. `ExemptSourcePlugins` reserves equivalent plugin exemptions for policy-aware integrations.
-
-Set `ChargeDestination` to `Treasury` to credit the configured `TreasuryFactionTag`, or `Sink` to remove the fee and tax from circulation. A failed payee credit reverses the treasury movement or sink accounting before the payer refund is confirmed. `!econadmin treasury` reports the active policy without printing exemption values.
-
-## Storage
-
-Compatibility paths:
-
-```text
-TROA-Econ-Plus.cfg
-TROA-Econ-PlusData/
-  EconPlusLedger.xml
-  EconPlusOperations.xml
-  EconPlusAdvanced.xml
-AuditExports/
-  EconPlus-Audit-YYYYMMDD-HHMMSS.csv
-```
-
-The TROA prefix remains in filenames for product and upgrade consistency. The default player-facing name is `Econ+` and is configurable.
-
-## Scheduled economy setup
-
-`EnablePayroll` is the master switch for automatic scheduled processing. `ScheduledJobPollSeconds` controls how often due work is checked, and `MaximumScheduledJobsPerRun` bounds each pass. `RequireFundedTreasuryPayouts` defaults to `true`; the faction named by `TreasuryFactionTag` must have enough native credits before a payout starts. Set a program interval to `0` for a one-time payout or a positive minute value for a repeating program.
-
-`EnablePayroll` above governs the admin-scheduled program engine (payroll/reward/bounty/contract/deposit programs paid from the global treasury) and is a separate feature from leader-run **faction payroll**, which is governed by `EnableFactionPayroll`. Faction payroll keys: `EnableFactionPayroll` (default `true`, also requires `EnableFactionAccounts`), `FactionPayrollFoundersOnly` (default `false` — founders or leaders), `FactionPayrollIncludesInitiator` (default `true`), `FactionPayrollCooldownSeconds` (default `30`), `MaximumFactionPayrollRecipients` (default `500`), and `MaximumFactionPayrollCreditsPerMember` (default `100000000`). See [Faction payroll](#faction-payroll).
-
-Program definitions and run state survive restarts in `EconPlusOperations.xml`. Each run uses the program ID and durable revision as its external reference. A successful repeating run advances its next UTC execution. Any unresolved payout places the program in `RecoveryRequired` instead of repeatedly attempting another debit.
-
-`Contract` and `Deposit` programs in Phase 5 are treasury-funded scheduled disbursements. Consumer-owned milestone escrow continues to use `IEconPlusApi` holds so Econ+ never takes custody of grids, inventories, or contract completion authority.
-
-## Operations safety
-
-`!econadmin adjust` only supports positive, treasury-funded corrections and requires a meaningful audit reason. It does not mint credits or silently edit ledger history. Negative corrections require staff to use native economy administration and then record/reconcile the outcome rather than allowing Econ+ to guess at custody.
-
-`!econadmin reconcile` records totals and the number of ambiguous transactions at that point in time; it does not force a state change. `!econadmin export` writes a server-local CSV and never posts private player data to Discord.
-
-## Phase 6–9 configuration
-
-`EnableRiskControls`, `AllowedApiPlugins`, rolling velocity fields, and `DailyTransferLimitCredits` control phase 6. Add every trusted server-side API consumer to `AllowedApiPlugins`; player `!econ` transfers identify as Econ+ and remain governed by player limits.
-
-For phase 7, leave `EnableNexusSynchronization` false on single-server installations. A Nexus deployment must assign a unique `NexusServerId`, configure exactly one `NexusAuthorityServerId`, and use an external authenticated transport adapter. The authority service rejects writes on non-authority servers and stores lease/replay evidence in `EconPlusAdvanced.xml`.
-
-Phase 8 analytics are available through `!econadmin analytics <days>` and audit exports. Phase 9 requires `EnableCreditProducts=true`; all loans debit the configured treasury before borrower credit and therefore cannot issue unfunded principal when funded payouts are required.
-
-If `EconPlusLedger.xml` cannot be read, Econ+ preserves the original as a timestamped `.corrupt-*` file and stops economy startup. It never replaces an unreadable authoritative ledger with an empty one.
-
-## Recovery finalization
-
-`recovery finalize` does not transfer, refund, create, or destroy credits. Before using it, staff must independently verify the payer, payee, and treasury balances in the native Space Engineers economy and reconcile the related consumer plugin. Run `recovery inspect`, use the exact displayed revision, choose the verified final state, and provide a quoted audit note of 10–500 characters. Econ+ rejects stale revisions, non-recovery transactions, duplicate finalization, and missing notes. Each accepted decision is appended to the ledger with its administrator Steam ID (or `0` for console), previous state/detail, final state, timestamp, and note.
-
-## Discord audit webhook
-
-Discord delivery is optional, asynchronous, bounded, and notification-only. Enable it with `EnableDiscordWebhook`, set a full HTTPS Discord webhook URL, and choose the external webhook name with `DiscordWebhookName`. Independent switches control Completed, Refunded, Failed, and RecoveryRequired events; Failed notifications default off while recovery alerts default on. Each actual state transition queues at most one notice. Compatible API retries that return an existing terminal transaction do not queue another notice.
-
-Webhook embeds contain only the short transaction ID, source plugin label, result state, amount, and fee. They do not contain Steam IDs, external references, recovery notes, webhook URLs, or checkpoint details. Delivery failures and a full queue are logged without exposing the URL and never alter an authoritative transaction.
-
-## Safety status
-
-This is an alpha foundation. Back up the server before testing. A restart marks an unconfirmed banking attempt as `RecoveryRequired`; a prepared record with no debit attempt is safely failed, and a durably confirmed hold stays held for its consumer. Econ+ never guesses an ambiguous transaction into a final state, and its recovery-finalization command only records a result that staff already verified outside the plugin.
-
-The public repository distributes approved binaries, configuration examples, and documentation only. Use and redistribution are governed by `LICENSE.md`; support and safe issue-reporting guidance are in `SUPPORT.md`.
+Read the [License](LICENSE.md) before using or redistributing the plugin. For help, use [SUPPORT.md](SUPPORT.md).

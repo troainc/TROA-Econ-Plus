@@ -1,5 +1,12 @@
 # TROA Econ+ Changelog
 
+## Documentation refresh - 2026-10-03
+
+- Replaced the crowded README with a player-first quick start and clear links to a new documentation area.
+- Added server-owner installation/setup, configuration, command-reference, player-guide, and troubleshooting/data-safety documents.
+- Kept the complete public configuration sample in sync with the documented v1.8.0-alpha schema; it matches the current private example byte-for-byte.
+- No plugin binaries or private implementation files were added to the public repository.
+
 ## v1.8.0-alpha - LCD Overhaul (Pretty + Complete)
 
 - Rebuilt the in-game LCD system around a render-agnostic **view model** (`EconomyLcdView`) with
