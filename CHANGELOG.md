@@ -1,4 +1,15 @@
+## Public operator documentation expansion - 2026-10-06
+
+- Added a detailed user guide under docs/USER_GUIDE.md and linked it from the documentation index and root README.
+- Documented current setup, feature ownership, command/config references, operational workflows, safety boundaries, and version/status limitations using the published behavior.
+- Added repository-local context, contribution instructions, and a dated documentation log entry. No private source or credentials are included.
+
 # TROA Econ+ Changelog
+
+## Roadmap correction - 2026-10-06
+
+- Reconciled the public roadmap's current version with the v1.8.0-alpha changelog and configuration schema.
+- Added the completed LCD/documentation phase and made open live financial validation gates prominent; no plugin code or package changed.
 
 ## Documentation refresh - 2026-10-03
 
@@ -350,3 +361,4 @@ surfaced through chat commands, LCD panels, and the server-side plugin API.
 ## Documentation navigation - 2026-10-03
 
 - Added a direct README link to the Econ+ documentation index and setup handbook.
+

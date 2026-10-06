@@ -2,6 +2,8 @@
 
 TROA Econ+ is a server-side economy plugin for Space Engineers running on Torch. Players use chat commands to check balances, pay each other, trade items, and use the other economy features enabled by the server owner. There is no client mod or separate player app.
 
+**Current documented build:** `v1.8.0-alpha`. The complete sample config follows this schema; use it only with a compatible plugin build. Econ+ remains alpha while the live financial recovery and server acceptance gates are open.
+
 ## Players: start here
 
 Use these commands in game chat:
@@ -33,6 +35,8 @@ The docs are organized as a small handbook. Start with the [Documentation Index]
 - [Player Guide](docs/PLAYER-GUIDE.md) — explain balances, payments, trading, accounts, loans, and other enabled features to players.
 - [Troubleshooting and Data Safety](docs/TROUBLESHOOTING.md) — common problems, backup, recovery, and safe reporting.
 
+For current development priorities and acceptance gates, see the [public roadmap](ROADMAP.md).
+
 ## Downloads and compatibility
 
 Use the plugin package supplied for the release you are installing, and keep its version matched to your server. This repository is the public documentation and configuration-example repository; it does not contain the closed-source plugin implementation. See [GitHub Releases](https://github.com/troainc/TROA-Econ-Plus/releases) for published packages, if available, and [CHANGELOG.md](CHANGELOG.md) for documented feature changes.
@@ -48,3 +52,9 @@ Read the [License](LICENSE.md) before using or redistributing the plugin. For he
 ## Documentation
 
 The README is the quick start. Use [`docs/README.md`](docs/README.md) to navigate the player guide, server-owner setup, configuration reference, commands, and troubleshooting.
+
+
+## Documentation
+
+Use the [documentation index](docs/README.md) and [detailed operator guide](docs/USER_GUIDE.md) for setup, everyday use, feature behavior, and troubleshooting. Check the changelog and the current release before applying version-specific instructions.
+

@@ -45,14 +45,18 @@ stock exchange are owned by Econ+ and surfaced through chat, the plugin API, and
 
 Every phase is implemented through chat commands, XML configuration, and the server-side plugin API. Econ+ will not add a custom UI.
 
+## Phase 13 - LCD presentation and operator clarity (implemented)
+
+- [x] Stage 15 - Render-agnostic LCD view models, styled sprite and text renderers, automatic text fallback, and expanded Dashboard/Tax/Contracts/Route/Insurance/Bonds/Help templates (`v1.8.0-alpha`).
+- [x] Stage 16 - Public player-first README and server-owner documentation handbook with setup, configuration, commands, troubleshooting, and data-safety guidance.
+
 ## Current status
 
-- Current build: `v1.3.2-alpha`
-- Build validation: .NET Framework 4.8 x64 build completed with zero warnings and zero errors.
-- Package: `TROA-Econ-Plus-v1.3.2-alpha.zip`
-- Self-tests: Keen boundary, escrow contract, commodity market, and investment exchange suites all pass.
+- Current documented build: `v1.8.0-alpha`
+- Release/build details: see the v1.8.0-alpha entry in `CHANGELOG.md`; the public sample configuration follows this schema and must only be used with a compatible plugin build.
+- Acceptance: financial and game-server production validation remains required before the alpha designation can be removed.
 - Architecture: Torch server plugin using commands, XML configuration, and the server-side API only; no custom UI or client mod.
-- Implemented scope: Phases 1–9 are implemented in source. Production validation remains required before the alpha designation can be removed.
+- Implemented scope: the roadmap describes implemented source and documented features; runtime acceptance remains separate and is listed below.
 
 ### Phase 1 — Safe transaction foundation (in progress)
 
@@ -133,6 +137,8 @@ Every phase is implemented through chat commands, XML configuration, and the ser
 - [x] Loan recovery and default states without automatic collections or collateral seizure.
 
 ## Production validation gates
+
+New money-moving features remain deferred until the transaction failure matrix, restart recovery, integration retries, and owner recovery workflow are accepted on a dedicated server.
 
 - [ ] Validate successful, insufficient-funds, failed-credit, refund, and treasury-reversal paths on a disposable live Space Engineers server.
 - [ ] Restart the server at each transaction checkpoint and verify conservative recovery classification.
