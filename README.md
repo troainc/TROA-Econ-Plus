@@ -1,3 +1,5 @@
+> **Bifrost Plugin Panel:** In a compatible Admin Overseer release, open **Plugin systems → Open workspace** for TROA Econ+. The [connection guide](docs/BIFROST-PLUGIN-PANEL.md) covers webserver setup, IPv4/domain access, accounts, permissions, and troubleshooting. Metrics and controls depend on what this installed plugin build actually exposes.
+
 # TROA Econ+
 
 TROA Econ+ is a server-side economy plugin for Space Engineers running on Torch. Players use chat commands to check balances, pay each other, trade items, and use the other economy features enabled by the server owner. There is no client mod or separate player app.
